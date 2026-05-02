@@ -1127,22 +1127,31 @@
       const sorted   = [...entries].sort((a, b) => new Date(b.tgeDate) - new Date(a.tgeDate));
       const recent   = sorted.slice(0, Math.min(5, sorted.length)).map(multiple).filter(m => isFinite(m) && m > 0);
 
-      // 1. Market condition (median of ALL entries)
+      // 1. Market condition — 3 most recent, outlier removal, median
       const badgeWrap = document.getElementById('market-badge-wrap');
       const descEl    = document.getElementById('market-desc');
-      if (allMult.length >= 3) {
-        const med = median(allMult);
+      const recent3   = sorted.slice(0, Math.min(3, sorted.length))
+                               .map(e => multiple(e)).filter(m => isFinite(m) && m > 0);
+      if (recent3.length >= 3) {
+        // Outlier removal: if one value > 2× avg of the other two, drop it
+        let clean = recent3;
+        for (let i = 0; i < recent3.length; i++) {
+          const others = recent3.filter((_, j) => j !== i);
+          const avgOthers = others.reduce((s, v) => s + v, 0) / others.length;
+          if (recent3[i] > 2 * avgOthers) { clean = others; break; }
+        }
+        const med = median(clean);
         let cls, label, desc;
-        if (med > 20)      { cls = 'badge-vgood';    label = 'Mania';     desc = `Median ×${med.toFixed(2)} — Euphoria. Every launch is flying, market is in full greed mode.`; }
-        else if (med > 10) { cls = 'badge-good';     label = 'Strong';    desc = `Median ×${med.toFixed(2)} — Strong launch regime. Projects TGE well above VC price consistently.`; }
-        else if (med > 5)  { cls = 'badge-avg';      label = 'Average';   desc = `Median ×${med.toFixed(2)} — Historical normal. Reasonable multiples, market is functional.`; }
-        else if (med > 2)  { cls = 'badge-bad';      label = 'Weak';      desc = `Median ×${med.toFixed(2)} — Most of current market. High rejection risk, TGE can easily fail.`; }
-        else               { cls = 'badge-terrible'; label = 'Very Poor'; desc = `Median ×${med.toFixed(2)} — Danger zone. TGE fail risk is high, market rejects new launches.`; }
+        if (med > 15)     { cls = 'badge-vgood';    label = 'Rất tốt';    desc = 'uptrend mạnh'; }
+        else if (med > 8) { cls = 'badge-good';     label = 'Tốt';        desc = 'uptrend'; }
+        else if (med > 4) { cls = 'badge-avg';      label = 'Trung bình'; desc = 'thanh khoản tốt'; }
+        else if (med > 2) { cls = 'badge-bad';      label = 'Xấu';        desc = 'thanh khoản yếu'; }
+        else              { cls = 'badge-terrible'; label = 'Rất xấu';    desc = 'cạn kiệt thanh khoản'; }
         badgeWrap.innerHTML = `<span class="market-badge ${cls}">${label}</span>`;
         descEl.textContent  = desc;
       } else {
         badgeWrap.innerHTML = `<span class="market-badge badge-avg">—</span>`;
-        descEl.textContent  = `Need at least 3 entries to evaluate (currently ${allMult.length}).`;
+        descEl.textContent  = `Cần ít nhất 3 dự án để đánh giá.`;
       }
 
       // 2. Recent TGE multiples — median emphasized as prediction base
