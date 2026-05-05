@@ -1313,7 +1313,6 @@
         Object.entries(fields).map(([k, v]) => [k, v.val])
       );
 
-      const errEl  = document.getElementById('add-error');
       const newRow = entryToDb({ ticker, tgeDate, fundraising, vcAlloc, totalSupply, priceTGE });
 
       if (_editKey) {
