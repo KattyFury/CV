@@ -992,9 +992,37 @@
     function allEntries() {
       const local   = loadLocal();
       const deleted = loadDeleted();
-      const seen    = new Set(publicData.map(e => e.ticker + e.tgeDate));
-      const extra   = local.filter(e => !seen.has(e.ticker + e.tgeDate));
-      return [...publicData, ...extra].filter(e => !deleted.has(e.ticker + e.tgeDate));
+      // Public entries that haven't been deleted or replaced by an edit
+      const publicActive    = publicData.filter(e => !deleted.has(e.ticker + e.tgeDate));
+      const activePublicKeys = new Set(publicActive.map(e => e.ticker + e.tgeDate));
+      // Local entries: new additions + edited replacements of deleted public entries
+      // (a local entry whose key matches an ACTIVE public entry is a stale duplicate — skip it)
+      const localExtra = local.filter(e => !activePublicKeys.has(e.ticker + e.tgeDate));
+      return [...publicActive, ...localExtra];
+    }
+
+    // ── Auto-save to tge-data.json (local server only) ───
+    // When running via server.js, any admin change is written to disk immediately.
+    // On GitHub Pages the POST fails silently — localStorage acts as fallback.
+    async function saveToDisk() {
+      const FIELDS = ['ticker','tgeDate','fundraising','vcAlloc','totalSupply','priceTGE'];
+      const payload = allEntries()
+        .sort((a, b) => new Date(a.tgeDate) - new Date(b.tgeDate))
+        .map(e => Object.fromEntries(FIELDS.map(k => [k, e[k]])));
+      try {
+        const res = await fetch('/save-tge', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(payload),
+        });
+        if (res.ok) {
+          // Saved to disk — clear localStorage (disk is now the source of truth)
+          localStorage.removeItem(LS_KEY);
+          localStorage.removeItem(LS_DELETED);
+          await fetchPublicData();   // re-read the just-written file
+        }
+      } catch { /* server unavailable — localStorage already has the change */ }
+      renderAll();
     }
 
     // ── Helpers ───────────────────────────────────────
@@ -1100,7 +1128,7 @@
             del.add(key);
             saveDeleted(del);
           }
-          renderAll();
+          saveToDisk();
         });
       });
 
@@ -1281,7 +1309,7 @@
 
       resetModal();
       closeModal('add-modal');
-      renderAll();
+      saveToDisk();
     });
 
     // ── Export JSON ───────────────────────────────────
