@@ -280,7 +280,10 @@
       text-transform: uppercase; color: var(--muted);
     }
 
-    .ard-table-scroll { overflow-x: auto; }
+    .ard-table-scroll {
+      overflow-x: auto;
+      max-height: calc(100vh - 520px); min-height: 160px; overflow-y: auto;
+    }
     .ard-table {
       width: 100%; border-collapse: collapse; font-size: 14px;
     }
@@ -326,6 +329,27 @@
       margin-top: 6px;
     }
     .ard-zone-warning { font-size: 12px; color: #c44; margin-top: 6px; }
+
+    /* ── UPCOMING SECTION ────────────────────────── */
+    .ard-upcoming-wrap { margin-top: 24px; }
+    .ard-upcoming-title {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted);
+      padding: 0 0 10px;
+    }
+    .ard-upcoming-list { display: flex; flex-direction: column; gap: 10px; }
+    .ard-upcoming-card {
+      border: 1px solid var(--border); border-radius: 12px;
+      padding: 14px 16px; background: var(--white);
+      display: grid; grid-template-columns: 1fr auto auto auto;
+      align-items: center; gap: 16px;
+    }
+    .ard-upcoming-name { font-weight: 600; font-size: 14px; }
+    .ard-upcoming-type { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .ard-upcoming-raise { font-size: 13px; color: var(--sub); }
+    .ard-upcoming-income { font-size: 13px; font-weight: 700; }
+    .ard-upcoming-pred { text-align: right; }
+    .ard-empty { text-align: center; padding: 32px 0; font-size: 14px; color: var(--muted); }
 
     .val-wrap {
       max-width: 900px;
@@ -953,19 +977,19 @@
     <!-- Role Safety content -->
     <div id="ard-role-view" class="ard-wrap">
 
-      <!-- Table -->
+      <!-- Historical table (already TGE'd) -->
       <div class="tge-table-wrap" style="margin-top:20px">
         <div class="ard-table-head">
-          <span class="ard-db-label">Role Safety — <span id="ard-count">0</span> projects</span>
+          <span class="ard-db-label">Past TGEs with role — <span id="ard-count">0</span> projects</span>
         </div>
         <div class="ard-table-scroll">
           <table class="ard-table">
             <thead>
               <tr>
                 <th>TICKER</th>
+                <th>TYPE</th>
                 <th>FUNDRAISED</th>
                 <th>INCOME</th>
-                <th>SCORE</th>
               </tr>
             </thead>
             <tbody id="ard-tbody"></tbody>
@@ -973,36 +997,14 @@
         </div>
       </div>
 
-      <!-- Bottom 3 cards -->
-      <div class="val-analysis" style="margin-top:20px">
-
-        <!-- Card 1: Safe Zone -->
-        <div class="val-card">
-          <div class="val-card-label calc-card-label">Safe Zone</div>
-          <div class="split-val" id="ard-safe-count" style="font-size:28px;margin-top:6px">—</div>
-          <div id="ard-safe-list" class="ard-zone-list"></div>
-          <div class="ard-zone-winrate">Win rate 85–100%</div>
-          <div class="split-lbl" style="margin-top:2px">Score ≥ 7 · Income ≠ 0</div>
+      <!-- Upcoming section (no scroll, full page) -->
+      <div class="ard-upcoming-wrap">
+        <div class="ard-table-head" style="margin-top:28px">
+          <span class="ard-db-label">Upcoming — worth farming? <span id="ard-upcoming-count">0</span></span>
         </div>
-
-        <!-- Card 2: Moderate -->
-        <div class="val-card">
-          <div class="val-card-label calc-card-label">Moderate</div>
-          <div class="split-val" id="ard-mod-count" style="font-size:28px;margin-top:6px">—</div>
-          <div id="ard-mod-list" class="ard-zone-list"></div>
-          <div class="ard-zone-winrate">Win rate 62–100%</div>
-          <div class="split-lbl" style="margin-top:2px">Score 5–6</div>
+        <div class="ard-upcoming-list" id="ard-upcoming-list">
+          <div class="ard-empty">No upcoming projects yet.</div>
         </div>
-
-        <!-- Card 3: Danger Zone -->
-        <div class="val-card">
-          <div class="val-card-label calc-card-label">Danger Zone</div>
-          <div class="split-val" id="ard-danger-count" style="font-size:28px;margin-top:6px;color:#c44">—</div>
-          <div id="ard-danger-list" class="ard-zone-list"></div>
-          <div class="ard-zone-warning">Win rate 20–33% ⚠</div>
-          <div class="split-lbl" style="margin-top:2px">Score ≤ 4</div>
-        </div>
-
       </div>
     </div>
   </div>
@@ -1180,52 +1182,72 @@
     }
 
     function renderAirdrop() {
-      const rows = _airdropData
-        .map(e => ({ ...e, score: calcSafetyScore(e.type, e.fundraising) }))
-        .sort((a, b) => b.score - a.score);
+      const today = new Date().toISOString().slice(0, 10);
 
-      document.getElementById('ard-count').textContent = rows.length;
+      const withScore = _airdropData.map(e => ({
+        ...e, score: calcSafetyScore(e.type, e.fundraising)
+      }));
 
-      // ── Table
+      // Split: past TGE (tgeDate exists and <= today) vs upcoming
+      const past     = withScore.filter(e => e.tgeDate && e.tgeDate <= today)
+                                .sort((a, b) => a.tgeDate.localeCompare(b.tgeDate));
+      const upcoming = withScore.filter(e => !e.tgeDate || e.tgeDate > today)
+                                .sort((a, b) => b.score - a.score);
+
+      // ── Historical table
+      document.getElementById('ard-count').textContent = past.length;
       const tbody = document.getElementById('ard-tbody');
       tbody.innerHTML = '';
-      rows.forEach(e => {
-        const upcoming = !e.tgeDate;
+
+      past.forEach(e => {
         const raise = e.fundraising >= 1e9
           ? `$${(e.fundraising/1e9).toFixed(1)}B`
           : `$${(e.fundraising/1e6).toFixed(0)}M`;
         const incomeHtml = e.roleIncome === '0'
-          ? `<span class="income-zero">–</span>`
+          ? `<span class="income-zero">0</span>`
           : `<span class="income-badge">${e.roleIncome}</span>`;
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>
-            <div class="ard-ticker-name">$${e.ticker}${upcoming ? '<span class="upcoming-tag">Upcoming</span>' : ''}</div>
-            <div class="ard-type-sub">${e.type || '—'}</div>
-          </td>
+          <td><div class="ard-ticker-name">$${e.ticker}</div></td>
+          <td><div style="font-size:13px;color:var(--sub)">${e.type || '—'}</div></td>
           <td>${raise}</td>
           <td>${incomeHtml}</td>
-          <td><span class="score-badge ${scoreCls(e.score)}">${e.score}/10 · ${scoreLabel(e.score)}</span></td>
         `;
         tbody.appendChild(tr);
       });
 
-      // ── Bottom cards
-      const safe   = rows.filter(e => e.score >= 7 && e.roleIncome !== '0');
-      const mod    = rows.filter(e => e.score >= 5 && e.score < 7);
-      const danger = rows.filter(e => e.score < 5);
+      // ── Upcoming list
+      document.getElementById('ard-upcoming-count').textContent = upcoming.length;
+      const upcomingList = document.getElementById('ard-upcoming-list');
 
-      document.getElementById('ard-safe-count').textContent   = safe.length;
-      document.getElementById('ard-mod-count').textContent    = mod.length;
-      document.getElementById('ard-danger-count').textContent = danger.length;
+      if (!upcoming.length) {
+        upcomingList.innerHTML = '<div class="ard-empty">No upcoming projects yet.</div>';
+        return;
+      }
 
-      const fillList = (id, items) => {
-        document.getElementById(id).innerHTML = items
-          .map(e => `<span class="ard-zone-ticker">$${e.ticker}</span>`).join('');
-      };
-      fillList('ard-safe-list',   safe);
-      fillList('ard-mod-list',    mod);
-      fillList('ard-danger-list', danger);
+      upcomingList.innerHTML = '';
+      upcoming.forEach(e => {
+        const raise = !e.fundraising ? '—'
+          : e.fundraising >= 1e9 ? `$${(e.fundraising/1e9).toFixed(1)}B`
+          : `$${(e.fundraising/1e6).toFixed(0)}M`;
+        const incomeHtml = e.roleIncome === '0'
+          ? `<span class="income-zero">0</span>`
+          : `<span class="income-badge">${e.roleIncome}</span>`;
+        const card = document.createElement('div');
+        card.className = 'ard-upcoming-card';
+        card.innerHTML = `
+          <div>
+            <div class="ard-upcoming-name">$${e.ticker}</div>
+            <div class="ard-upcoming-type">${e.type || '—'}</div>
+          </div>
+          <div class="ard-upcoming-raise">${raise}</div>
+          <div class="ard-upcoming-income">${incomeHtml}</div>
+          <div class="ard-upcoming-pred">
+            <span class="score-badge ${scoreCls(e.score)}">${e.score}/10 · ${scoreLabel(e.score)}</span>
+          </div>
+        `;
+        upcomingList.appendChild(card);
+      });
     }
 
     // ── Admin mode ────────────────────────────────────
