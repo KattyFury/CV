@@ -622,15 +622,27 @@
       display: inline-flex; align-items: center; gap: 4px;
       font-size: 12px; font-weight: 700; letter-spacing: 0.06em;
       color: #111; text-decoration: none;
-      background: rgba(255,161,17,0.12);
-      border: 1px solid rgba(255,161,17,0.35);
+      background: rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.15);
       padding: 3px 9px; border-radius: 999px;
       flex-shrink: 0; white-space: nowrap;
       transition: background 0.15s, color 0.15s, border-color 0.15s;
     }
-    .wte-guide-link:hover {
-      background: var(--accent); color: #fff; border-color: var(--accent);
+    /* GUIDE pill color follows rank */
+    .wte-card--S .wte-guide-link {
+      background: rgba(220,38,38,0.10); border-color: rgba(220,38,38,0.45); color: rgb(185,28,28);
     }
+    .wte-card--S .wte-guide-link:hover { background: rgb(220,38,38); color: #fff; border-color: rgb(220,38,38); }
+
+    .wte-card--A .wte-guide-link {
+      background: rgba(37,99,235,0.10); border-color: rgba(37,99,235,0.45); color: rgb(29,78,216);
+    }
+    .wte-card--A .wte-guide-link:hover { background: rgb(37,99,235); color: #fff; border-color: rgb(37,99,235); }
+
+    .wte-card--B .wte-guide-link {
+      background: rgba(161,98,7,0.10); border-color: rgba(161,98,7,0.45); color: rgb(120,53,15);
+    }
+    .wte-card--B .wte-guide-link:hover { background: rgb(161,98,7); color: #fff; border-color: rgb(161,98,7); }
 
     /* Overview */
     .wte-overview {
