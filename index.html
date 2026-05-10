@@ -567,14 +567,17 @@
     }
     .lang-btn.active { background: var(--accent); color: #fff; }
 
-    /* Cards grid — 1 col mobile, 2 col desktop */
-    #wte-cards {
+    /* Cards wrapper — stacks rank groups vertically */
+    #wte-cards { display: flex; flex-direction: column; gap: 8px; }
+
+    /* Each rank group is its own 2-col grid */
+    .wte-rank-group {
       display: grid;
       grid-template-columns: 1fr;
       gap: 16px;
     }
     @media (min-width: 768px) {
-      #wte-cards { grid-template-columns: 1fr 1fr; }
+      .wte-rank-group { grid-template-columns: 1fr 1fr; }
     }
 
     /* Card */
@@ -582,10 +585,10 @@
       background: white; border: 1px solid var(--border);
       border-radius: 14px; overflow: hidden;
     }
-    /* Rank-tinted backgrounds */
-    .wte-card--S { background: rgba(239,68,68,0.04);  border-color: rgba(239,68,68,0.18); }
-    .wte-card--A { background: rgba(251,146,60,0.05); border-color: rgba(251,146,60,0.22); }
-    .wte-card--B { background: rgba(234,179,8,0.04);  border-color: rgba(234,179,8,0.20); }
+    /* Rank-tinted backgrounds — clearly distinct */
+    .wte-card--S { background: rgba(220,38,38,0.10);  border-color: rgba(220,38,38,0.45); }
+    .wte-card--A { background: rgba(37,99,235,0.07);  border-color: rgba(37,99,235,0.35); }
+    .wte-card--B { background: rgba(161,98,7,0.08);   border-color: rgba(161,98,7,0.35);  }
 
     /* Card header */
     .wte-card-head {
@@ -616,11 +619,18 @@
       border-radius: 999px; white-space: nowrap; flex-shrink: 0;
     }
     .wte-guide-link {
-      font-size: 15px; color: var(--muted); text-decoration: none;
-      flex-shrink: 0; line-height: 1;
-      transition: color 0.15s;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+      color: var(--accent); text-decoration: none;
+      background: rgba(255,161,17,0.12);
+      border: 1px solid rgba(255,161,17,0.35);
+      padding: 3px 9px; border-radius: 999px;
+      flex-shrink: 0; white-space: nowrap;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
     }
-    .wte-guide-link:hover { color: var(--accent); }
+    .wte-guide-link:hover {
+      background: var(--accent); color: #fff; border-color: var(--accent);
+    }
 
     /* Overview */
     .wte-overview {
@@ -1655,14 +1665,13 @@
 
       countEl.textContent = projects.length + ' projects';
 
-      container.innerHTML = projects.map(p => {
+      const cardHtml = p => {
         const guideHtml = p.guideUrl
-          ? `<a class="wte-guide-link" href="${p.guideUrl}" target="_blank" rel="noopener" title="Guide">📖</a>`
+          ? `<a class="wte-guide-link" href="${p.guideUrl}" target="_blank" rel="noopener">📖 GUIDE</a>`
           : '';
         const nameHtml = p.twitter
           ? `<a class="wte-name" href="${p.twitter}" target="_blank" rel="noopener">${p.name}</a>`
           : `<span class="wte-name">${p.name}</span>`;
-
         return `<div class="wte-card wte-card--${p.rank}">
           <div class="wte-card-head">
             <span class="wte-rank rank-${p.rank}">${p.rank}</span>
@@ -1676,7 +1685,15 @@
           ${section('Weekly', p.weekly, 'weekly')}
           ${section('Note', p.notes, 'note')}
         </div>`;
-      }).join('');
+      };
+
+      // Group by rank — each rank in its own 2-col grid so ranks never share rows
+      const groups = { S: [], A: [], B: [] };
+      projects.forEach(p => { if (groups[p.rank]) groups[p.rank].push(p); });
+      container.innerHTML = ['S','A','B']
+        .filter(r => groups[r].length)
+        .map(r => `<div class="wte-rank-group wte-rank-group--${r}">${groups[r].map(cardHtml).join('')}</div>`)
+        .join('');
     }
 
     // ── Sub-tab switching ─────────────────────────────
