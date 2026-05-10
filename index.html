@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -298,35 +298,6 @@
       gap: 8px;
     }
 
-    .lock-btn {
-      background: none; border: none; cursor: pointer;
-      font-size: 14px; padding: 3px 6px;
-      border-radius: 6px; color: var(--muted);
-      transition: background 0.15s, color 0.15s;
-      line-height: 1;
-    }
-    .lock-btn:hover { background: var(--border); color: var(--text); }
-
-    .add-btn, .export-btn {
-      display: none;
-      align-items: center;
-      gap: 4px;
-      padding: 5px 11px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: white;
-      font-family: 'Roboto', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text);
-      cursor: pointer;
-      transition: border-color 0.15s;
-    }
-    .add-btn:hover { border-color: var(--accent); }
-    .export-btn { border-color: var(--border); color: var(--sub); }
-    .export-btn:hover { border-color: var(--text); color: var(--text); }
-    .admin-visible { display: inline-flex !important; }
-
     .val-table-scroll { max-height: calc(100vh - 520px); min-height: 160px; overflow-y: auto; }
 
     .val-table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -350,22 +321,10 @@
     }
 
     .val-table tbody tr:last-child td { border-bottom: none; }
-    .td-ticker { font-weight: 600; color: var(--text) !important; }
-    .td-multi  { font-weight: 700; color: var(--text) !important; }
-    .td-source { font-size: 11px; color: var(--muted) !important; }
-
-    .del-btn, .edit-btn {
-      display: none;
-      background: none; border: none; cursor: pointer;
-      font-size: 13px; padding: 2px 6px;
-      border-radius: 4px; line-height: 1; transition: color 0.15s;
-    }
-    .del-btn  { color: var(--muted); }
-    .del-btn:hover  { color: #d44; }
-    .edit-btn { color: var(--muted); }
-    .edit-btn:hover { color: var(--accent); }
-    .admin-visible-cell { display: table-cell !important; }
-    .input-error { border-color: #c44 !important; }
+    .td-project { font-weight: 500; color: var(--text) !important; }
+    .td-ticker  { font-weight: 600; color: var(--sub)  !important; font-size: 12px; }
+    .td-multi   { font-weight: 700; color: var(--text) !important; }
+    .td-source  { font-size: 11px; color: var(--muted) !important; }
 
     .val-empty { padding: 40px 16px; text-align: center; font-size: 14px; color: var(--muted); }
 
@@ -561,54 +520,6 @@
       margin-top: 8px;
     }
 
-    /* ── MODALS ───────────────────────────────────── */
-    .modal-overlay {
-      display: none; position: fixed; inset: 0; z-index: 500;
-      background: rgba(0,0,0,0.45); align-items: center;
-      justify-content: center; padding: 24px;
-    }
-    .modal-overlay.open { display: flex; }
-
-    .modal-box {
-      background: white; border-radius: 16px; padding: 28px;
-      width: 100%; max-width: 400px;
-      box-shadow: 0 8px 48px rgba(0,0,0,0.18);
-      max-height: 90vh; overflow-y: auto;
-    }
-
-    .modal-title { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 20px; }
-
-    .modal-fields { display: flex; flex-direction: column; gap: 12px; }
-    .modal-field { display: flex; flex-direction: column; gap: 4px; }
-    .modal-field label {
-      font-size: 11px; font-weight: 600;
-      letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted);
-    }
-    .modal-field input {
-      padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
-      font-family: 'Roboto', sans-serif; font-size: 14px; color: var(--text);
-      background: white; outline: none; transition: border-color 0.15s;
-    }
-    .modal-field input:focus { border-color: var(--accent); }
-    .modal-hint { font-size: 11px; color: var(--muted); }
-    .modal-error { font-size: 12px; color: #c44; margin-top: 6px; display: none; }
-    .modal-error.show { display: block; }
-
-    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
-
-    .modal-cancel {
-      padding: 8px 18px; border: 1px solid var(--border); border-radius: 8px;
-      background: white; font-family: 'Roboto', sans-serif; font-size: 14px;
-      font-weight: 500; color: var(--sub); cursor: pointer; transition: background 0.15s;
-    }
-    .modal-cancel:hover { background: var(--off); }
-
-    .modal-confirm {
-      padding: 8px 18px; border: none; border-radius: 8px; background: var(--accent);
-      font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 600;
-      color: var(--text); cursor: pointer; transition: opacity 0.15s;
-    }
-    .modal-confirm:hover { opacity: 0.85; }
   </style>
 </head>
 <body>
@@ -618,7 +529,7 @@
     <div class="header-inner">
       <a class="header-home" href="https://0xhieu.xyz">0xhieu.xyz</a>
       <nav>
-        <button class="nav-btn active" id="nav-cv-btn">CV</button>
+        <button class="nav-btn active" id="nav-cv-btn">About me</button>
         <button class="nav-btn" id="nav-val-btn">Valuation</button>
         <button class="nav-btn" disabled>Airdrop</button>
       </nav>
@@ -749,22 +660,17 @@
           <div class="val-panel-head-left">
             <span>TGE Database</span>
           </div>
-          <div class="val-panel-head-right">
-            <button class="export-btn" id="export-btn">↓ Export JSON</button>
-            <button class="add-btn" id="add-btn">+ Add</button>
-            <button class="lock-btn" id="lock-btn" title="Admin login">🔒</button>
-          </div>
+          <div class="val-panel-head-right"></div>
         </div>
         <div class="val-table-scroll">
           <table class="val-table">
             <thead>
               <tr>
+                <th>Project</th>
                 <th>Ticker</th>
                 <th>TGE</th>
-                <th>VC Round FDV</th>
                 <th>Price at TGE</th>
                 <th>Multiple</th>
-                <th style="display:none" id="th-actions"></th>
               </tr>
             </thead>
             <tbody id="tge-tbody"></tbody>
@@ -858,66 +764,6 @@
     </div>
   </div>
 
-  <!-- ── ADD MODAL ─────────────────────────────────── -->
-  <div class="modal-overlay" id="add-modal">
-    <div class="modal-box">
-      <div class="modal-title" id="add-modal-title">Add TGE entry</div>
-      <div class="modal-fields">
-        <div class="modal-field">
-          <label>Ticker</label>
-          <input id="m-ticker" type="text" placeholder="e.g. TOKEN" />
-        </div>
-        <div class="modal-field">
-          <label>TGE Date</label>
-          <input id="m-date" type="date" />
-        </div>
-        <div class="modal-field">
-          <label>Fundraising (M USD)</label>
-          <input id="m-raise" type="number" step="0.1" />
-          <div class="modal-hint">Total raised across all rounds, in millions</div>
-        </div>
-        <div class="modal-field">
-          <label>VC Allocation (%)</label>
-          <input id="m-alloc" type="number" step="0.01" />
-          <div class="modal-hint">% of total supply allocated to investors</div>
-        </div>
-        <div class="modal-field">
-          <label>Total Supply</label>
-          <input id="m-supply" type="text" placeholder="e.g. 10B, 500M, 1.5B" />
-          <div class="modal-hint">Supports shorthand: 10B = 10 billion, 500M = 500 million</div>
-        </div>
-        <div class="modal-field">
-          <label>Price at TGE (USD)</label>
-          <input id="m-price" type="number" step="any" placeholder="e.g. 1.23" />
-          <div class="modal-hint">Token price on TGE closing candle</div>
-        </div>
-      </div>
-      <div class="modal-error" id="add-error">Please fill in all fields correctly.</div>
-      <div class="modal-footer">
-        <button class="modal-cancel" id="add-cancel">Cancel</button>
-        <button class="modal-confirm" id="add-save">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── PASSWORD MODAL ────────────────────────────── -->
-  <div class="modal-overlay" id="pw-modal">
-    <div class="modal-box" style="max-width:320px;">
-      <div class="modal-title">Admin</div>
-      <div class="modal-fields">
-        <div class="modal-field">
-          <label>Password</label>
-          <input id="pw-input" type="password" placeholder="Enter password" />
-          <div class="modal-error" id="pw-error">Wrong password</div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="modal-cancel" id="pw-cancel">Cancel</button>
-        <button class="modal-confirm" id="pw-confirm">Login</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Lightbox -->
   <div id="lightbox">
     <button id="lightbox-close" aria-label="Close">&#x2715;</button>
@@ -925,38 +771,6 @@
   </div>
 
   <script>
-    // ── SUPABASE ──────────────────────────────────────
-    const _sb = supabase.createClient(
-      'https://qtiwpckulrbjgsomckow.supabase.co',
-      'sb_publishable__NaFgk3owzCHL-MAvRv4Vg_mdcyv5qo'
-    );
-
-    // Map DB row → JS entry
-    function dbToEntry(row) {
-      return {
-        ticker:      row.ticker,
-        tgeDate:     row.tge_date,
-        fundraising: Number(row.fundraising),
-        vcAlloc:     Number(row.vc_alloc),
-        totalSupply: Number(row.total_supply),
-        priceTGE:    Number(row.price_tge),
-      };
-    }
-    // Map JS entry → DB row
-    function entryToDb(e) {
-      return {
-        ticker:       e.ticker,
-        tge_date:     e.tgeDate,
-        fundraising:  e.fundraising,
-        vc_alloc:     e.vcAlloc,
-        total_supply: e.totalSupply,
-        price_tge:    e.priceTGE,
-      };
-    }
-
-    // ── ADMIN PASSWORD ────────────────────────────────
-    const ADMIN_PASSWORD = '161194';
-
     // ── View switching ────────────────────────────────
     const cvView    = document.getElementById('cv-view');
     const valView   = document.getElementById('valuation-view');
@@ -981,76 +795,65 @@
     navValBtn.addEventListener('click', showValuation);
     navCvBtn.addEventListener('click', showCV);
 
-    // ── Admin mode ────────────────────────────────────
-    let isAdmin = sessionStorage.getItem('val_admin') === '1';
+    // ── Data layer — Google Sheets (read-only) ────────
+    // Columns: A=project, B=type, C=ticker, D=fundraised($M), E=vcAlloc(%), F=totalSupply, G=tgeDate, H=priceTGE, I=vcMultiple(ignored, recalculated)
+    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1m8_nwbP_Apw43Y8iNxOoGFYy8YA-OpchGnVRfTMBUAo/gviz/tq?tqx=out:csv&sheet=DATA';
 
-    function applyAdminUI() {
-      const lockBtn   = document.getElementById('lock-btn');
-      const addBtn    = document.getElementById('add-btn');
-      const exportBtn = document.getElementById('export-btn');
-      const thActions = document.getElementById('th-actions');
+    let publicData = [];
 
-      if (isAdmin) {
-        lockBtn.textContent = '🔓';
-        addBtn.classList.add('admin-visible');
-        exportBtn.classList.add('admin-visible');
-        thActions.style.display = '';
-        document.querySelectorAll('#tge-tbody td:last-child').forEach(td => td.style.display = '');
-        document.querySelectorAll('.del-btn, .edit-btn').forEach(b => b.style.display = 'inline');
-      } else {
-        lockBtn.textContent = '🔒';
-        addBtn.classList.remove('admin-visible');
-        exportBtn.classList.remove('admin-visible');
-        thActions.style.display = 'none';
-        document.querySelectorAll('#tge-tbody td:last-child').forEach(td => td.style.display = 'none');
-        document.querySelectorAll('.del-btn, .edit-btn').forEach(b => b.style.display = 'none');
+    // Robust single-line CSV parser (handles quoted fields with embedded commas)
+    function parseCSVLine(line) {
+      const out = []; let cur = '', inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (inQ) {
+          if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+          else if (c === '"') inQ = false;
+          else cur += c;
+        } else {
+          if (c === '"') inQ = true;
+          else if (c === ',') { out.push(cur.trim()); cur = ''; }
+          else cur += c;
+        }
       }
+      out.push(cur.trim());
+      return out;
     }
 
-    document.getElementById('lock-btn').addEventListener('click', () => {
-      if (isAdmin) {
-        isAdmin = false;
-        sessionStorage.removeItem('val_admin');
-        applyAdminUI();
-      } else {
-        openModal('pw-modal');
-        setTimeout(() => document.getElementById('pw-input').focus(), 50);
-      }
-    });
-
-    document.getElementById('pw-confirm').addEventListener('click', () => {
-      const val = document.getElementById('pw-input').value;
-      if (val === ADMIN_PASSWORD) {
-        isAdmin = true;
-        sessionStorage.setItem('val_admin', '1');
-        document.getElementById('pw-input').value = '';
-        document.getElementById('pw-error').classList.remove('show');
-        closeModal('pw-modal');
-        applyAdminUI();
-      } else {
-        document.getElementById('pw-error').classList.add('show');
-      }
-    });
-
-    document.getElementById('pw-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') document.getElementById('pw-confirm').click();
-    });
-
-    document.getElementById('pw-cancel').addEventListener('click', () => {
-      document.getElementById('pw-input').value = '';
-      document.getElementById('pw-error').classList.remove('show');
-      closeModal('pw-modal');
-    });
-
-    // ── Data layer — Supabase ─────────────────────────
-    let publicData = [];  // in-memory cache of tge_entries table
-
     async function fetchPublicData() {
-      const { data, error } = await _sb
-        .from('tge_entries')
-        .select('*')
-        .order('tge_date', { ascending: true });
-      if (!error && data) publicData = data.map(dbToEntry);
+      try {
+        const res  = await fetch(SHEET_CSV_URL);
+        const text = await res.text();
+        const lines = text.trim().split('\n');
+        // Skip header row (row 0), parse data rows
+        publicData = lines.slice(1)
+          .map(l => parseCSVLine(l))
+          .filter(r => r[2])   // must have ticker (col C)
+          .map(r => {
+            // Generic number: strip $ and comma thousand-separators
+            const num = s => parseFloat(String(s).replace(/[$,]/g, '')) || 0;
+            // Money with dot thousand-separators: "$178.500.000" → 178500000
+            const parseMoney = s => {
+              let v = String(s).replace(/\$/g, '').trim();
+              const dots = (v.match(/\./g) || []).length;
+              v = dots > 1 ? v.replace(/\./g, '') : v.replace(/,/g, '');
+              return parseFloat(v) || 0;
+            };
+            return {
+              project:     r[0] || '',
+              type:        r[1] || '',
+              ticker:      r[2].replace(/^\$/, '').toUpperCase(),
+              fundraising: parseMoney(r[3]),           // col D: raw USD e.g. $178.500.000
+              vcAlloc:     num(r[4]),                  // col E: percent
+              totalSupply: parseSupply(r[5]) || 0,     // col F: supports 10B / 500M
+              tgeDate:     normalizeDate(r[6]),         // col G: normalised to YYYY-MM-DD
+              priceTGE:    num(r[7]),                   // col H
+            };
+          })
+          .filter(e => e.ticker && e.tgeDate && e.fundraising > 0);
+      } catch (err) {
+        console.warn('Could not load sheet data:', err);
+      }
     }
 
     function allEntries() { return publicData; }
@@ -1111,60 +914,42 @@
       return n;
     }
 
+    // Normalise any date string to YYYY-MM-DD for consistent sorting & display
+    function normalizeDate(s) {
+      if (!s) return '';
+      s = s.trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;                     // already ISO
+      const a = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);            // M/D/YYYY
+      if (a) return `${a[3]}-${a[1].padStart(2,'0')}-${a[2].padStart(2,'0')}`;
+      const b = s.match(/^(\d{2})-(\d{2})-(\d{4})$/);                  // DD-MM-YYYY
+      if (b) return `${b[3]}-${b[2]}-${b[1]}`;
+      return s;
+    }
+
     // ── Render table ──────────────────────────────────
     function renderTable() {
       const entries = allEntries();
       const tbody = document.getElementById('tge-tbody');
 
       if (!entries.length) {
-        tbody.innerHTML = '<tr><td colspan="6"><div class="val-empty">No data yet.</div></td></tr>';
-        applyAdminUI();
+        tbody.innerHTML = '<tr><td colspan="5"><div class="val-empty">Loading data…</div></td></tr>';
         return;
       }
 
       const sorted = [...entries].sort((a, b) => new Date(a.tgeDate) - new Date(b.tgeDate));
 
       tbody.innerHTML = sorted.map(e => {
-        const vcFDV     = e.fundraising / (e.vcAlloc / 100);
-        const x         = multiple(e);
-        const price     = e.priceTGE != null ? fmtPrice(e.priceTGE) : '—';
-        const key       = e.ticker + e.tgeDate;
-        const entryJson = encodeURIComponent(JSON.stringify(e));
+        const x     = multiple(e);
+        const price = e.priceTGE > 0 ? fmtPrice(e.priceTGE) : '—';
+        const mult  = x > 0 ? `×${x.toFixed(2)}` : '—';
         return `<tr>
-          <td class="td-ticker">$${e.ticker.toUpperCase()}</td>
+          <td class="td-project">${e.project || e.ticker}</td>
+          <td class="td-ticker">$${e.ticker}</td>
           <td>${fmtDate(e.tgeDate)}</td>
-          <td>${fmtFDV(vcFDV)}</td>
           <td>${price}</td>
-          <td class="td-multi">×${x.toFixed(2)}</td>
-          <td style="display:none">
-            <button class="edit-btn" data-entry="${entryJson}" style="display:none">✎</button>
-            <button class="del-btn"  data-key="${key}" style="display:none">×</button>
-          </td>
+          <td class="td-multi">${mult}</td>
         </tr>`;
       }).join('');
-
-      tbody.querySelectorAll('.del-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const key   = btn.dataset.key;
-          const entry = publicData.find(e => e.ticker + e.tgeDate === key);
-          if (!entry) return;
-          btn.disabled = true;
-          await _sb.from('tge_entries').delete()
-            .eq('ticker', entry.ticker)
-            .eq('tge_date', entry.tgeDate);
-          await fetchPublicData();
-          renderAll();
-        });
-      });
-
-      tbody.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const entry = JSON.parse(decodeURIComponent(btn.dataset.entry));
-          openEditModal(entry);
-        });
-      });
-
-      applyAdminUI();
     }
 
     // ── Render analysis ───────────────────────────────
@@ -1230,148 +1015,6 @@
     }
 
     function renderAll() { renderTable(); renderAnalysis(); }
-
-    // ── Add / Edit modal ──────────────────────────────
-    function openModal(id)  { document.getElementById(id).classList.add('open'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-    // Format supply for display in edit modal (e.g. 10000000000 → "10B")
-    function fmtSupply(n) {
-      if (!n) return '';
-      // Use unary + to strip trailing zeros: +(10.000) = 10, +(1.500) = 1.5
-      if (n >= 1e12) return +(n / 1e12).toPrecision(9) + 'T';
-      if (n >= 1e9)  return +(n / 1e9).toPrecision(9)  + 'B';
-      if (n >= 1e6)  return +(n / 1e6).toPrecision(9)  + 'M';
-      return String(n);
-    }
-
-    let _editKey = null; // null = add mode, key string = edit mode
-
-    function resetModal() {
-      _editKey = null;
-      document.getElementById('add-modal-title').textContent = 'Add TGE entry';
-      const fields = ['m-ticker', 'm-date', 'm-raise', 'm-alloc', 'm-supply', 'm-price'];
-      fields.forEach(id => {
-        const el = document.getElementById(id);
-        el.value = '';
-        el.classList.remove('input-error');
-      });
-      document.getElementById('add-error').classList.remove('show');
-    }
-
-    function openEditModal(entry) {
-      resetModal();
-      _editKey = entry.ticker + entry.tgeDate;
-      document.getElementById('add-modal-title').textContent = 'Edit TGE entry';
-      document.getElementById('m-ticker').value = entry.ticker;
-      document.getElementById('m-date').value   = entry.tgeDate;
-      document.getElementById('m-raise').value  = entry.fundraising / 1e6;
-      document.getElementById('m-alloc').value  = entry.vcAlloc;
-      document.getElementById('m-supply').value = entry.totalSupply ? fmtSupply(entry.totalSupply) : '';
-      document.getElementById('m-price').value  = entry.priceTGE   || '';
-      openModal('add-modal');
-    }
-
-    document.getElementById('add-btn').addEventListener('click', () => { resetModal(); openModal('add-modal'); });
-    document.getElementById('add-cancel').addEventListener('click', () => { resetModal(); closeModal('add-modal'); });
-    document.getElementById('add-modal').addEventListener('click', e => { if (e.target.id === 'add-modal') { resetModal(); closeModal('add-modal'); } });
-    document.getElementById('pw-modal').addEventListener('click', e => { if (e.target.id === 'pw-modal') closeModal('pw-modal'); });
-
-    // Clear red border when user starts typing
-    ['m-ticker','m-date','m-raise','m-alloc','m-supply','m-price'].forEach(id => {
-      document.getElementById(id).addEventListener('input', function() {
-        this.classList.remove('input-error');
-        document.getElementById('add-error').classList.remove('show');
-      });
-    });
-
-    document.getElementById('add-save').addEventListener('click', async () => {
-      const errEl  = document.getElementById('add-error');
-
-      const fields = {
-        ticker:      { el: document.getElementById('m-ticker'), val: null },
-        tgeDate:     { el: document.getElementById('m-date'),   val: null },
-        fundraising: { el: document.getElementById('m-raise'),  val: null },
-        vcAlloc:     { el: document.getElementById('m-alloc'),  val: null },
-        totalSupply: { el: document.getElementById('m-supply'), val: null },
-        priceTGE:    { el: document.getElementById('m-price'),  val: null },
-      };
-
-      fields.ticker.val      = fields.ticker.el.value.trim().replace(/^\$/, '').toUpperCase();
-      fields.tgeDate.val     = fields.tgeDate.el.value;
-      fields.fundraising.val = parseFloat(fields.fundraising.el.value) * 1e6;
-      fields.vcAlloc.val     = parseFloat(fields.vcAlloc.el.value);
-      fields.totalSupply.val = parseSupply(fields.totalSupply.el.value);
-      fields.priceTGE.val    = parseFloat(fields.priceTGE.el.value);
-
-      // Validate — highlight each bad field individually
-      const checks = {
-        ticker:      !!fields.ticker.val,
-        tgeDate:     !!fields.tgeDate.val,
-        fundraising: fields.fundraising.val > 0,
-        vcAlloc:     fields.vcAlloc.val > 0,
-        totalSupply: fields.totalSupply.val > 0,
-        priceTGE:    fields.priceTGE.val > 0,
-      };
-
-      let hasError = false;
-      for (const [key, ok] of Object.entries(checks)) {
-        if (!ok) { fields[key].el.classList.add('input-error'); hasError = true; }
-      }
-      if (hasError) { errEl.classList.add('show'); return; }
-
-      const { ticker, tgeDate, fundraising, vcAlloc, totalSupply, priceTGE } = Object.fromEntries(
-        Object.entries(fields).map(([k, v]) => [k, v.val])
-      );
-
-      const newRow = entryToDb({ ticker, tgeDate, fundraising, vcAlloc, totalSupply, priceTGE });
-
-      if (_editKey) {
-        const old    = publicData.find(e => e.ticker + e.tgeDate === _editKey);
-        const newKey = ticker + tgeDate;
-
-        if (old && _editKey === newKey) {
-          // Same ticker+date → safe UPDATE (no delete needed)
-          const { error: updErr } = await _sb.from('tge_entries')
-            .update(newRow)
-            .eq('ticker', old.ticker)
-            .eq('tge_date', old.tgeDate);
-          if (updErr) { errEl.textContent = updErr.message || 'Update failed.'; errEl.classList.add('show'); return; }
-        } else {
-          // Key changed → INSERT first, only delete old if insert succeeded
-          const { error: insErr } = await _sb.from('tge_entries').insert([newRow]);
-          if (insErr) { errEl.textContent = insErr.message || 'Save failed.'; errEl.classList.add('show'); return; }
-          if (old) {
-            await _sb.from('tge_entries').delete()
-              .eq('ticker', old.ticker).eq('tge_date', old.tgeDate);
-          }
-        }
-      } else {
-        // New entry → INSERT
-        const { error: insErr } = await _sb.from('tge_entries').insert([newRow]);
-        if (insErr) { errEl.textContent = insErr.message || 'Save failed.'; errEl.classList.add('show'); return; }
-      }
-
-      await fetchPublicData();
-      resetModal();
-      closeModal('add-modal');
-      renderAll();
-    });
-
-    // ── Export JSON ───────────────────────────────────
-    document.getElementById('export-btn').addEventListener('click', () => {
-      const FIELDS = ['ticker','tgeDate','fundraising','vcAlloc','totalSupply','priceTGE'];
-      const data = JSON.stringify(
-        allEntries().map(e => Object.fromEntries(FIELDS.map(k => [k, e[k]]))),
-        null, 2
-      );
-      const blob = new Blob([data], { type: 'application/json' });
-      const a    = document.createElement('a');
-      a.href     = URL.createObjectURL(blob);
-      a.download = 'tge-data.json';
-      a.click();
-      URL.revokeObjectURL(a.href);
-    });
 
     // ── Weighted median ───────────────────────────────
     function weightedMedian(items) {
@@ -1634,7 +1277,6 @@
     (async () => {
       await fetchPublicData();
       renderAll();
-      applyAdminUI();
     })();
   </script>
 
