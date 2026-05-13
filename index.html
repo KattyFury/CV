@@ -585,10 +585,10 @@
       background: white; border: 1px solid var(--border);
       border-radius: 14px; overflow: hidden;
     }
-    /* Rank-tinted backgrounds — clearly distinct */
-    .wte-card--S { background: rgba(220,38,38,0.10);  border-color: rgba(220,38,38,0.45); }
-    .wte-card--A { background: rgba(37,99,235,0.07);  border-color: rgba(37,99,235,0.35); }
-    .wte-card--B { background: rgba(161,98,7,0.08);   border-color: rgba(161,98,7,0.35);  }
+    /* Rank-tinted backgrounds */
+    .wte-card--S { background: rgba(255,51,51,0.08);  border-color: rgba(255,51,51,0.35); }
+    .wte-card--A { background: rgba(255,161,17,0.08); border-color: rgba(255,161,17,0.40); }
+    .wte-card--B { background: rgba(255,234,0,0.10);  border-color: rgba(255,234,0,0.55); }
 
     /* Card header */
     .wte-card-head {
@@ -601,9 +601,9 @@
       padding: 2px 8px; border-radius: 6px;
       flex-shrink: 0;
     }
-    .rank-S { background: #FFA111; color: #fff; }
-    .rank-A { background: #3B82F6; color: #fff; }
-    .rank-B { background: #94A3B8; color: #fff; }
+    .rank-S { background: #FF3333; color: #fff; }
+    .rank-A { background: #FFA111; color: #fff; }
+    .rank-B { background: #FFEA00; color: #333; }
 
     .wte-name {
       font-size: 15px; font-weight: 700;
@@ -628,21 +628,21 @@
       flex-shrink: 0; white-space: nowrap;
       transition: background 0.15s, color 0.15s, border-color 0.15s;
     }
-    /* GUIDE pill color follows rank */
+    /* GUIDE pill — black text, rank-tinted border */
     .wte-card--S .wte-guide-link {
-      background: rgba(220,38,38,0.10); border-color: rgba(220,38,38,0.45); color: rgb(185,28,28);
+      background: rgba(255,51,51,0.08); border-color: rgba(255,51,51,0.45); color: #111;
     }
-    .wte-card--S .wte-guide-link:hover { background: rgb(220,38,38); color: #fff; border-color: rgb(220,38,38); }
+    .wte-card--S .wte-guide-link:hover { background: #FF3333; color: #fff; border-color: #FF3333; }
 
     .wte-card--A .wte-guide-link {
-      background: rgba(37,99,235,0.10); border-color: rgba(37,99,235,0.45); color: rgb(29,78,216);
+      background: rgba(255,161,17,0.10); border-color: rgba(255,161,17,0.50); color: #111;
     }
-    .wte-card--A .wte-guide-link:hover { background: rgb(37,99,235); color: #fff; border-color: rgb(37,99,235); }
+    .wte-card--A .wte-guide-link:hover { background: #FFA111; color: #fff; border-color: #FFA111; }
 
     .wte-card--B .wte-guide-link {
-      background: rgba(161,98,7,0.10); border-color: rgba(161,98,7,0.45); color: rgb(120,53,15);
+      background: rgba(255,234,0,0.15); border-color: rgba(255,234,0,0.70); color: #111;
     }
-    .wte-card--B .wte-guide-link:hover { background: rgb(161,98,7); color: #fff; border-color: rgb(161,98,7); }
+    .wte-card--B .wte-guide-link:hover { background: #FFEA00; color: #333; border-color: #FFEA00; }
 
     /* Overview */
     .wte-overview {
@@ -659,40 +659,27 @@
       border-top: 1px solid var(--border);
       padding: 10px 18px 12px;
     }
+    /* All section labels: grey allcaps */
     .wte-section-label {
-      font-size: 9px; font-weight: 800;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 8px;
-      opacity: 0.55;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.10em; text-transform: uppercase;
+      color: #999; margin-bottom: 8px;
     }
-    /* Daily section — highlighted, color follows rank */
-    .wte-section--daily {
-      border-left: 3px solid currentColor;
-      padding-left: 15px;
-    }
-    .wte-section--daily .wte-section-label { font-weight: 800; }
-    .wte-section--daily .wte-task-text { color: var(--text); font-weight: 500; }
 
-    /* S rank → red daily */
+    /* Daily section — rank-tinted, slightly darker than card */
+    .wte-section--daily { padding-left: 15px; }
+    .wte-section--daily .wte-section-label { font-size: 10px; color: #999; }
+    .wte-section--daily .wte-task-text { color: #111; font-weight: 700; }
+
     .wte-card--S .wte-section--daily {
-      background: rgba(220,38,38,0.07);
-      border-left-color: rgba(220,38,38,0.7);
+      background: rgba(255,51,51,0.14); border-left: 3px solid rgba(255,51,51,0.7);
     }
-    .wte-card--S .wte-section--daily .wte-section-label { color: rgb(185,28,28); }
-
-    /* A rank → blue daily */
     .wte-card--A .wte-section--daily {
-      background: rgba(37,99,235,0.07);
-      border-left-color: rgba(37,99,235,0.7);
+      background: rgba(255,161,17,0.14); border-left: 3px solid rgba(255,161,17,0.7);
     }
-    .wte-card--A .wte-section--daily .wte-section-label { color: rgb(29,78,216); }
-
-    /* B rank → amber daily */
     .wte-card--B .wte-section--daily {
-      background: rgba(161,98,7,0.07);
-      border-left-color: rgba(161,98,7,0.7);
+      background: rgba(255,234,0,0.22); border-left: 3px solid rgba(255,234,0,0.9);
     }
-    .wte-card--B .wte-section--daily .wte-section-label { color: rgb(120,53,15); }
     .wte-tasks {
       list-style: none; margin: 0; padding: 0;
       display: flex; flex-direction: column; gap: 5px;
