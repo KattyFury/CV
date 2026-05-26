@@ -1792,9 +1792,8 @@
 
     // ── Init ─────────────────────────────────────────
     (async () => {
-      await fetchPublicData();
+      await Promise.all([fetchPublicData(), fetchWTE()]);
       renderAll();
-      await fetchWTE();
       renderWTE();
       translateToEN();
     })();
