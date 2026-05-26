@@ -19,7 +19,7 @@
       --muted:  #9a9a9a;
       --sub:    #555;
       --text:   #1a1a1a;
-      --accent: #8B5CF6;
+      --accent: #FFA111;
       --max:    900px;
     }
 
@@ -377,8 +377,8 @@
     .mkt-lvl[data-lvl="0"].mkt-active { background: #8B5CF6; color: #fff; }
     .mkt-lvl[data-lvl="1"].mkt-active { background: #3B82F6; color: #fff; }
     .mkt-lvl[data-lvl="2"].mkt-active { background: #22C55E; color: #fff; }
-    .mkt-lvl[data-lvl="3"].mkt-active { background: #EAB308; color: #fff; }
-    .mkt-lvl[data-lvl="4"].mkt-active { background: #EF4444; color: #fff; }
+    .mkt-lvl[data-lvl="3"].mkt-active { background: #FFD447; color: #1a1a1a; }
+    .mkt-lvl[data-lvl="4"].mkt-active { background: #FF5A36; color: #1a1a1a; }
     /* split-box luôn trắng dù card đổi màu */
     #market-terms { background: #fff; }
 
@@ -419,7 +419,7 @@
 
     .calc-btn {
       width: 100%; padding: 9px; background: var(--accent);
-      color: #fff; border: none; border-radius: 8px;
+      color: #1a1a1a; border: none; border-radius: 8px;
       font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 600;
       cursor: pointer; transition: opacity 0.15s;
     }
@@ -567,7 +567,7 @@
       color: var(--muted); padding: 5px 14px;
       transition: background 0.15s, color 0.15s;
     }
-    .lang-btn.active { background: var(--accent); color: #fff; }
+    .lang-btn.active { background: var(--accent); color: #1a1a1a; }
 
     /* Cards wrapper — stacks rank groups vertically */
     #wte-cards { display: flex; flex-direction: column; gap: 8px; }
@@ -603,18 +603,18 @@
       padding: 2px 8px; border-radius: 6px;
       flex-shrink: 0;
     }
-    .rank-S { background: #8B5CF6; color: #fff; }
-    .rank-A { background: #3B82F6; color: #fff; }
-    .rank-B { background: #22C55E; color: #fff; }
+    .rank-S { background: #FF5A36; color: #1a1a1a; }
+    .rank-A { background: #FFA111; color: #1a1a1a; }
+    .rank-B { background: #FFD447; color: #1a1a1a; }
 
     .wte-name {
       font-size: 15px; font-weight: 700;
       color: var(--text); text-decoration: none;
       flex: 1; min-width: 0;
     }
-    .wte-card--S .wte-name:hover { color: #8B5CF6; }
-    .wte-card--A .wte-name:hover { color: #3B82F6; }
-    .wte-card--B .wte-name:hover { color: #22C55E; }
+    .wte-card--S .wte-name:hover { color: #FF5A36; }
+    .wte-card--A .wte-name:hover { color: #FFA111; }
+    .wte-card--B .wte-name:hover { color: #c8a000; }
 
     .wte-type {
       font-size: 11px; font-weight: 600;
@@ -625,9 +625,9 @@
 
 
     /* Section labels follow rank */
-    .wte-card--S .wte-section-label { color: #8B5CF6; }
-    .wte-card--A .wte-section-label { color: #3B82F6; }
-    .wte-card--B .wte-section-label { color: #22C55E; }
+    .wte-card--S .wte-section-label { color: #FF5A36; }
+    .wte-card--A .wte-section-label { color: #FFA111; }
+    .wte-card--B .wte-section-label { color: #c8a000; }
 
 
     /* Sections */
@@ -649,12 +649,12 @@
     .wte-section--daily .wte-task-text { color: var(--text); font-weight: 500; }
 
     /* Daily — xám nhạt chữ đen, border-left giữ màu rank */
-    .wte-card--S .wte-section--daily { background: rgba(139,92,246,0.18); border-left-color: #8B5CF6; }
-    .wte-card--A .wte-section--daily { background: rgba(59,130,246,0.15);  border-left-color: #3B82F6; }
-    .wte-card--B .wte-section--daily { background: rgba(34,197,94,0.15);   border-left-color: #22C55E; }
-    .wte-card--S .wte-section--daily .wte-section-label { color: #8B5CF6; }
-    .wte-card--A .wte-section--daily .wte-section-label { color: #3B82F6; }
-    .wte-card--B .wte-section--daily .wte-section-label { color: #22C55E; }
+    .wte-card--S .wte-section--daily { background: rgba(255,90,54,0.12);  border-left-color: #FF5A36; }
+    .wte-card--A .wte-section--daily { background: rgba(255,161,17,0.12); border-left-color: #FFA111; }
+    .wte-card--B .wte-section--daily { background: rgba(255,212,71,0.20); border-left-color: #FFD447; }
+    .wte-card--S .wte-section--daily .wte-section-label { color: #FF5A36; }
+    .wte-card--A .wte-section--daily .wte-section-label { color: #FFA111; }
+    .wte-card--B .wte-section--daily .wte-section-label { color: #c8a000; }
     .wte-tasks {
       list-style: none; margin: 0; padding: 0;
       display: flex; flex-direction: column; gap: 5px;
@@ -664,9 +664,9 @@
       font-size: 13px; color: var(--sub); line-height: 1.5;
     }
     .wte-task-item::before { content: '•'; flex-shrink: 0; }
-    .wte-card--S .wte-task-item::before { color: #8B5CF6; }
-    .wte-card--A .wte-task-item::before { color: #3B82F6; }
-    .wte-card--B .wte-task-item::before { color: #22C55E; }
+    .wte-card--S .wte-task-item::before { color: #FF5A36; }
+    .wte-card--A .wte-task-item::before { color: #FFA111; }
+    .wte-card--B .wte-task-item::before { color: #FFD447; }
     .wte-task-row {
       display: flex; align-items: flex-start; gap: 8px;
       flex: 1; color: inherit; text-decoration: none;
@@ -713,7 +713,7 @@
       <section class="hero" id="about">
         <div class="hero-top">
           <div class="pfp">
-            <img src="PFP.jpg" alt="0xhieu" onerror="this.parentNode.innerHTML='<div class=pfp-fallback>0x</div>'" />
+            <img src="icon.png" alt="0xhieu" onerror="this.parentNode.innerHTML='<div class=pfp-fallback>0x</div>'" />
           </div>
           <div class="hero-info">
             <div class="hero-handle">0xhieu &nbsp;–&nbsp; Hieu Nguyen</div>
@@ -1246,7 +1246,7 @@
         el.classList.toggle('mkt-active', i === lvlIdx);
       });
       // Tint card background to match market level
-      const mktCardBg = ['rgba(139,92,246,0.10)','rgba(59,130,246,0.09)','rgba(34,197,94,0.09)','rgba(234,179,8,0.12)','rgba(239,68,68,0.12)'];
+      const mktCardBg = ['rgba(139,92,246,0.10)','rgba(59,130,246,0.09)','rgba(34,197,94,0.09)','rgba(255,212,71,0.14)','rgba(255,90,54,0.12)'];
       const mktCard = document.getElementById('market-card');
       if (mktCard) mktCard.style.background = mktCardBg[lvlIdx] || '';
 
