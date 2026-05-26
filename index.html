@@ -1011,29 +1011,41 @@
       [navCvBtn, navValBtn, navArdBtn].forEach(b => b.classList.remove('active'));
     }
 
-    function showCV() {
+    function showCV(push = true) {
       hideAllViews();
       cvView.style.display = '';
       navCvBtn.classList.add('active');
+      if (push) history.pushState({}, '', '/');
     }
 
-    function showValuation() {
+    function showValuation(push = true) {
       hideAllViews();
       valView.style.display = 'block';
       navValBtn.classList.add('active');
       renderAll();
+      if (push) history.pushState({}, '', '/valuation');
     }
 
-    function showAirdrop() {
+    function showAirdrop(push = true) {
       hideAllViews();
       ardView.style.display = 'block';
       navArdBtn.classList.add('active');
       renderWTE();
+      if (push) history.pushState({}, '', '/airdrop');
     }
 
-    navCvBtn.addEventListener('click', showCV);
-    navValBtn.addEventListener('click', showValuation);
-    navArdBtn.addEventListener('click', showAirdrop);
+    function routeFromPath() {
+      const p = window.location.pathname;
+      if (p === '/valuation') showValuation(false);
+      else if (p === '/airdrop') showAirdrop(false);
+      else showCV(false);
+    }
+
+    navCvBtn.addEventListener('click', () => showCV());
+    navValBtn.addEventListener('click', () => showValuation());
+    navArdBtn.addEventListener('click', () => showAirdrop());
+    window.addEventListener('popstate', routeFromPath);
+    routeFromPath();
 
     // ── Data layer — Google Sheets (read-only) ────────
     // Columns: A=project, B=type, C=ticker, D=fundraised($M), E=vcAlloc(%), F=totalSupply, G=tgeDate, H=priceTGE, I=vcMultiple(ignored, recalculated)
