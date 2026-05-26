@@ -1594,7 +1594,6 @@
             getStarted: [],
             daily:      [],
             weekly:     [],
-            notes:      [],
           };
           projects.push(current);
         }
@@ -1607,13 +1606,9 @@
         const dailyLink = (r[7] || '').trim();
         const weekly = (r[8] || '').trim();
         const weeklyLink = (r[9] || '').trim();
-        const note = (r[10] || '').trim();
-        const noteLink = (r[11] || '').trim();
-
         if (task)   current.getStarted.push({ text: task,   link: taskLink });
         if (daily)  current.daily.push({      text: daily,  link: dailyLink });
         if (weekly) current.weekly.push({     text: weekly, link: weeklyLink });
-        if (note)   current.notes.push({      text: note,   link: noteLink });
       }
 
       // Sort: S → A → B → others
@@ -1644,7 +1639,7 @@
       const SEP = '\n[|||]\n';
       const texts = [];
       wteData.VI.forEach(p => {
-        ['getStarted','daily','weekly','notes'].forEach(f => {
+        ['getStarted','daily','weekly'].forEach(f => {
           (p[f] || []).forEach(item => texts.push(item.text || ''));
         });
       });
@@ -1667,7 +1662,7 @@
       let idx = 0;
       wteData.EN = wteData.VI.map(p => {
         const en = { ...p };
-        ['getStarted','daily','weekly','notes'].forEach(f => {
+        ['getStarted','daily','weekly'].forEach(f => {
           en[f] = (p[f] || []).map(item => ({ ...item, text: translated[idx++] || item.text }));
         });
         return en;
@@ -1722,7 +1717,6 @@
           ${section('Get Started', p.getStarted, 'getStarted')}
           ${section('Daily', p.daily, 'daily')}
           ${section('Weekly', p.weekly, 'weekly')}
-          ${section('Note', p.notes, 'note')}
         </div>`;
       };
 
