@@ -54,7 +54,15 @@ http.createServer((req, res) => {
   const file = path.join(ROOT, url);
   const ext  = path.extname(file);
   fs.readFile(file, (err, data) => {
-    if (err) { res.writeHead(404); res.end('Not found'); return; }
+    if (err) {
+      // SPA fallback: serve index.html for unknown routes
+      fs.readFile(path.join(ROOT, 'index.html'), (e2, d2) => {
+        if (e2) { res.writeHead(404); res.end('Not found'); return; }
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(d2);
+      });
+      return;
+    }
     res.writeHead(200, { 'Content-Type': MIME[ext] || 'text/plain' });
     res.end(data);
   });

@@ -298,7 +298,7 @@
       gap: 8px;
     }
 
-    .val-table-scroll { max-height: calc(100vh - 520px); min-height: 160px; overflow-y: auto; }
+    .val-table-scroll { max-height: calc(100vh - 520px); min-height: 160px; overflow-y: auto; overflow-x: auto; }
 
     .val-table { width: 100%; border-collapse: collapse; font-size: 14px; }
 
@@ -321,7 +321,6 @@
     }
 
     .val-table tbody tr:last-child td { border-bottom: none; }
-    .td-project { font-weight: 500; color: var(--text) !important; }
     .td-ticker  { font-weight: 600; color: var(--sub)  !important; font-size: 12px; }
     .td-multi   { font-weight: 700; color: var(--text) !important; }
     .td-source  { font-size: 11px; color: var(--muted) !important; }
@@ -840,11 +839,10 @@
           <table class="val-table">
             <thead>
               <tr>
-                <th>Project</th>
                 <th>Ticker</th>
-                <th>TGE</th>
-                <th>Price at TGE</th>
-                <th>Multiple</th>
+                <th>TGE Date</th>
+                <th>×TGE</th>
+                <th>×ATH</th>
               </tr>
             </thead>
             <tbody id="tge-tbody"></tbody>
@@ -1058,21 +1056,17 @@
         const res  = await fetch(SHEET_CSV_URL);
         const text = await res.text();
         const lines = text.trim().split('\n');
-        // Skip header row (row 0), parse data rows
         publicData = lines.slice(1)
           .map(l => parseCSVLine(l))
-          .filter(r => r[2])   // must have ticker (col C)
+          .filter(r => r[0])   // must have ticker (col A)
           .map(r => {
-            // Smart number parser: handles both European (1,178 → 1.178) and US (1,178 → 1178)
-            // Rule: single comma = decimal sep; multiple commas = thousand seps
             const num = s => {
               let v = String(s).replace(/[$\s]/g, '').trim();
               const commas = (v.match(/,/g) || []).length;
-              if (commas > 1) v = v.replace(/,/g, '');       // US thousand seps → strip
-              else if (commas === 1) v = v.replace(',', '.'); // European decimal → dot
+              if (commas > 1) v = v.replace(/,/g, '');
+              else if (commas === 1) v = v.replace(',', '.');
               return parseFloat(v) || 0;
             };
-            // Money with dot thousand-separators: "$178.500.000" → 178500000
             const parseMoney = s => {
               let v = String(s).replace(/\$/g, '').trim();
               const dots = (v.match(/\./g) || []).length;
@@ -1080,19 +1074,64 @@
               return parseFloat(v) || 0;
             };
             return {
-              project:     r[0] || '',
-              type:        r[1] || '',
-              ticker:      r[2].replace(/^\$/, '').toUpperCase(),
-              fundraising: parseMoney(r[3]),           // col D: raw USD e.g. $178.500.000
-              vcAlloc:     num(r[4]),                  // col E: percent
-              totalSupply: parseSupply(r[5]) || 0,     // col F: supports 10B / 500M
-              tgeDate:     normalizeDate(r[6]),         // col G: normalised to YYYY-MM-DD
-              priceTGE:    num(r[7]),                   // col H
+              ticker:      (r[0] || '').replace(/^\$/, '').toUpperCase(), // col A
+              cgId:        (r[1] || '').trim().toLowerCase(),              // col B: CoinGecko ID
+              type:        r[2] || '',                                     // col C
+              fundraising: parseMoney(r[3]),                               // col D
+              vcAlloc:     num(r[4]),                                      // col E: percent
+              totalSupply: parseSupply(r[5]) || 0,                        // col F
+              tgeDate:     normalizeDate(r[6]),                            // col G
+              priceTGE:    num(r[7]),                                      // col H
+              ath:         num(r[11]),                                     // col L (from sheet)
             };
           })
           .filter(e => e.ticker && e.tgeDate && e.fundraising > 0);
       } catch (err) {
         console.warn('Could not load sheet data:', err);
+      }
+    }
+
+    // ── CoinGecko: bulk ATH + current price, auto-fill priceTGE if missing ──
+    async function fetchCoinGeckoData() {
+      const entries = publicData.filter(e => e.cgId);
+      if (!entries.length) return;
+
+      // 1 request → ATH + current price for ALL coins
+      try {
+        const ids = entries.map(e => e.cgId).join(',');
+        const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=250&page=1&sparkline=false`;
+        const res  = await fetch(url);
+        const data = await res.json();
+        const map  = {};
+        data.forEach(c => { map[c.id] = { ath: c.ath, currentPrice: c.current_price }; });
+        entries.forEach(e => {
+          if (map[e.cgId]) {
+            e.ath          = map[e.cgId].ath;
+            e.currentPrice = map[e.cgId].currentPrice;
+          }
+        });
+      } catch (err) {
+        console.warn('CoinGecko markets fetch failed:', err);
+      }
+
+      // History: only entries with priceTGE missing
+      const needHistory = entries.filter(e => !e.priceTGE && e.tgeDate);
+      if (!needHistory.length) return;
+
+      const BATCH = 5;
+      for (let i = 0; i < needHistory.length; i += BATCH) {
+        const batch = needHistory.slice(i, i + BATCH);
+        await Promise.all(batch.map(async e => {
+          try {
+            const [y, m, d] = e.tgeDate.split('-');
+            const date = `${d}-${m}-${y}`; // CoinGecko expects DD-MM-YYYY
+            const url  = `https://api.coingecko.com/api/v3/coins/${e.cgId}/history?date=${date}&localization=false`;
+            const res  = await fetch(url);
+            const data = await res.json();
+            e.priceTGE = data?.market_data?.current_price?.usd || 0;
+          } catch {}
+        }));
+        if (i + BATCH < needHistory.length) await new Promise(r => setTimeout(r, 2200));
       }
     }
 
@@ -1121,10 +1160,21 @@
       return '$' + p.toExponential(3);
     }
 
-    // FDV from entry (supports both old fdvAtTGE and new priceTGE+totalSupply)
     function entryFDV(e) {
       if (e.priceTGE != null && e.totalSupply != null) return e.priceTGE * e.totalSupply;
       return e.fdvAtTGE || 0;
+    }
+
+    // VC price per token = (fundraising / vcAlloc%) / totalSupply
+    function vcPricePerToken(e) {
+      if (!e.vcAlloc || !e.totalSupply) return 0;
+      return (e.fundraising / (e.vcAlloc / 100)) / e.totalSupply;
+    }
+
+    // How many × VC cost is `price`
+    function xMult(price, e) {
+      const vc = vcPricePerToken(e);
+      return vc > 0 && price > 0 ? price / vc : null;
     }
 
     function multiple(e) {
@@ -1196,15 +1246,13 @@
       const sorted = [...entries].sort((a, b) => new Date(a.tgeDate) - new Date(b.tgeDate));
 
       tbody.innerHTML = sorted.map(e => {
-        const x     = multiple(e);
-        const price = e.priceTGE > 0 ? fmtPrice(e.priceTGE) : '—';
-        const mult  = x > 0 ? `×${x.toFixed(2)}` : '—';
+        const xTGE = multiple(e);
+        const xATH = xMult(e.ath, e);
         return `<tr>
-          <td class="td-project">${e.project || e.ticker}</td>
           <td class="td-ticker">$${e.ticker}</td>
           <td>${fmtDate(e.tgeDate)}</td>
-          <td>${price}</td>
-          <td class="td-multi">${mult}</td>
+          <td class="td-multi">${xTGE > 0 ? '×' + xTGE.toFixed(2) : '—'}</td>
+          <td class="td-multi">${xATH > 0 ? '×' + xATH.toFixed(2) : '—'}</td>
         </tr>`;
       }).join('');
     }
