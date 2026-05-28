@@ -333,9 +333,12 @@
 
     /* ── ANALYSIS CARDS ───────────────────────────── */
     .val-analysis {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 12px;
+    }
+    @media (max-width: 640px) {
+      .val-analysis { grid-template-columns: 1fr; }
     }
 
     .val-card {
