@@ -336,7 +336,9 @@
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 12px;
+      align-items: stretch;
     }
+    .val-analysis > .val-card { height: 100%; box-sizing: border-box; }
     @media (max-width: 640px) {
       .val-analysis { grid-template-columns: 1fr; }
     }
@@ -775,7 +777,7 @@
         <!-- 1. Market condition -->
         <div class="val-card" id="market-card">
           <div class="val-card-label calc-card-label">Market condition</div>
-          <div class="split-box" id="market-terms" style="display:none">
+          <div class="split-box" id="market-terms">
             <div class="split-col">
               <div class="split-val" id="market-short-val">—</div>
               <div class="split-lbl">Short-term<br><span id="market-short-n"></span></div>
@@ -1217,15 +1219,10 @@
       const mktCard = document.getElementById('market-card');
       if (mktCard) mktCard.style.background = mktCardBg[lvlIdx] || '';
 
-      if (short4.length >= 4) {
-        splitBox.style.display = '';
-        shortValEl.textContent = `×${shortMed.toFixed(2)}`;
-        shortNEl.textContent   = `${short4.length} deals`;
-        midValEl.textContent   = midValues.length >= 2 ? `×${midMed.toFixed(2)}` : '—';
-        midNEl.textContent     = midValues.length >= 2 ? `${midN} deals` : '';
-      } else {
-        splitBox.style.display = 'none';
-      }
+      shortValEl.textContent = short4.length ? `×${shortMed.toFixed(2)}` : '—';
+      shortNEl.textContent   = short4.length ? `${short4.length} deals` : '';
+      midValEl.textContent   = midValues.length >= 2 ? `×${midMed.toFixed(2)}` : '—';
+      midNEl.textContent     = midValues.length >= 2 ? `${midN} deals` : '';
 
       // 2. Recent TGE multiples — split Low FDV (<$300M entry) vs High FDV (≥$300M entry)
       const FDV_SPLIT = 300e6;
