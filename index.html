@@ -1028,10 +1028,11 @@
         const res  = await fetch(url);
         const data = await res.json();
         const map  = {};
-        data.forEach(c => { map[c.id] = { ath: c.ath, currentPrice: c.current_price }; });
+        data.forEach(c => { map[c.id] = { ath: c.ath, athDate: c.ath_date, currentPrice: c.current_price }; });
         entries.forEach(e => {
           if (map[e.cgId]) {
             e.ath          = map[e.cgId].ath;
+            e.athDate      = map[e.cgId].athDate;
             e.currentPrice = map[e.cgId].currentPrice;
           }
         });
@@ -1172,7 +1173,10 @@
 
       tbody.innerHTML = sorted.map(e => {
         const xTGE  = multiple(e);
-        const xATH  = xMult(e.ath, e);
+        // ATH cùng ngày TGE = râu nến listing, không tính
+        const athIntraday = e.athDate && e.tgeDate &&
+          Math.abs(new Date(e.athDate) - new Date(e.tgeDate)) < 24 * 3600 * 1000;
+        const xATH  = athIntraday ? 0 : xMult(e.ath, e);
         const xATM  = xMult(e.currentPrice, e);
         const vcFDV = e.vcAlloc > 0 ? e.fundraising / (e.vcAlloc / 100) : 0;
         const size = vcFDV <= 0 ? '' :
