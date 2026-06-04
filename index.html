@@ -523,6 +523,15 @@
       display: flex; align-items: center; gap: 10px;
       padding: 14px 18px 12px;
     }
+    .wte-logo {
+      width: 22px; height: 22px; border-radius: 50%;
+      object-fit: cover; flex-shrink: 0;
+      background: var(--border);
+    }
+    .wte-card-meta {
+      display: flex; align-items: center; gap: 6px;
+      margin-left: auto; flex-shrink: 0;
+    }
     .wte-rank {
       font-size: 11px; font-weight: 800;
       letter-spacing: 0.06em;
@@ -1604,14 +1613,23 @@
       countEl.textContent = projects.length + ' projects';
 
       const cardHtml = p => {
+        const handle   = p.twitter
+          ? p.twitter.replace(/.*twitter\.com\/|.*x\.com\/|^@/, '').split('?')[0].trim()
+          : '';
+        const logoHtml = handle
+          ? `<img class="wte-logo" src="https://unavatar.io/twitter/${handle}" alt="${p.name}" loading="lazy" />`
+          : '';
         const nameHtml = p.twitter
           ? `<a class="wte-name" href="${p.twitter}" target="_blank" rel="noopener">${p.name}</a>`
           : `<span class="wte-name">${p.name}</span>`;
         return `<div class="wte-card wte-card--${p.rank}">
           <div class="wte-card-head">
-            <span class="wte-rank rank-${p.rank}">${p.rank}</span>
+            ${logoHtml}
             ${nameHtml}
-            ${p.type ? `<span class="wte-type">${p.type}</span>` : ''}
+            <div class="wte-card-meta">
+              ${p.type ? `<span class="wte-type">${p.type}</span>` : ''}
+              <span class="wte-rank rank-${p.rank}">${p.rank}</span>
+            </div>
           </div>
           ${section('Get Started', p.getStarted, 'getStarted')}
           ${section('Daily', p.daily, 'daily')}
