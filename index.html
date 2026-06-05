@@ -616,6 +616,56 @@
     .wte-task-text { flex: 1; }
     .wte-task-icon { font-size: 11px; flex-shrink: 0; opacity: 0.5; margin-top: 2px; }
 
+    /* ── PROJECTS & FUNDRAISING TABLE ────────────────── */
+    .pf-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin: 16px 0 10px;
+    }
+    .pf-count { font-size: 12px; color: var(--muted); }
+    .pf-hint  { font-size: 11px; color: var(--muted); opacity: 0.7; }
+    .pf-wrap  {
+      border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+      max-height: calc(100vh - 240px); overflow-y: auto;
+    }
+    .pf-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+    .pf-table td, .pf-table th { overflow: hidden; text-overflow: ellipsis; }
+    .pf-table thead th {
+      padding: 9px 14px; text-align: left;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+      text-transform: uppercase; color: var(--muted);
+      background: white; position: sticky; top: 0; z-index: 2;
+      border-bottom: 1px solid var(--border); white-space: nowrap;
+    }
+    .pf-table tbody td {
+      padding: 9px 14px; color: var(--sub);
+      border-bottom: 1px solid var(--border); vertical-align: top;
+    }
+    .pf-table tbody tr:last-child td { border-bottom: none; }
+    .pf-table tbody tr:hover { background: var(--off); }
+    .pf-td-name   { font-weight: 600; color: var(--text); white-space: nowrap; }
+    .pf-td-amount { font-weight: 700; color: var(--text); white-space: nowrap; }
+    .pf-td-round  { font-size: 11px; color: var(--muted); white-space: nowrap; }
+    .pf-td-vcs    { font-size: 12px; line-height: 1.55; }
+    .pf-td-date   { font-size: 11px; color: var(--muted); white-space: nowrap; }
+
+    /* BRG project type tag */
+    .brg-type-tag {
+      display: inline-block;
+      font-size: 10px; font-weight: 500; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 1px 5px; margin-left: 6px;
+      vertical-align: middle; white-space: nowrap;
+    }
+
+    /* BRG rank badge */
+    .brg-rank {
+      display: inline-block; font-size: 11px; font-weight: 800;
+      letter-spacing: 0.06em; padding: 2px 8px; border-radius: 6px;
+    }
+    .brg-rank--S { background: #FF5A36; color: #fff; }
+    .brg-rank--A { background: #FFA111; color: #1a1a1a; }
+    .brg-rank--B { background: #FFD447; color: #1a1a1a; }
+
     /* Coming soon */
     .ard-coming-soon {
       display: flex; flex-direction: column;
@@ -882,13 +932,29 @@
         <div id="wte-cards"></div>
       </div>
 
-      <!-- Best Roles panel (placeholder) -->
+      <!-- Best Roles panel -->
       <div id="ard-brg-panel" style="display:none">
-        <div class="ard-coming-soon">
-          <div class="ard-cs-icon">🔜</div>
-          <div class="ard-cs-text">Best Roles to Grind — coming soon</div>
+        <div class="pf-toolbar">
+          <span class="pf-count" id="brg-count"></span>
+          <span class="pf-hint">Projects with roles · rated by fundraising, chain type, VC</span>
+        </div>
+        <div class="pf-wrap">
+          <table class="pf-table">
+            <thead>
+              <tr>
+                <th style="width:25%">Project</th>
+                <th style="width:25%">Raised</th>
+                <th style="width:25%">VCs</th>
+                <th style="width:25%">Rating</th>
+              </tr>
+            </thead>
+            <tbody id="brg-tbody">
+              <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted)">Click tab to load</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
+
 
     </div>
   </div>
@@ -1651,19 +1717,21 @@
     }
 
     // ── Sub-tab switching ─────────────────────────────
-    const ardTabWTE    = document.getElementById('ard-tab-wte');
-    const ardTabBRG    = document.getElementById('ard-tab-brg');
-    const ardWTEPanel  = document.getElementById('ard-wte-panel');
-    const ardBRGPanel  = document.getElementById('ard-brg-panel');
+    const ardTabWTE   = document.getElementById('ard-tab-wte');
+    const ardTabBRG   = document.getElementById('ard-tab-brg');
+    const ardWTEPanel = document.getElementById('ard-wte-panel');
+    const ardBRGPanel = document.getElementById('ard-brg-panel');
 
-    ardTabWTE.addEventListener('click', () => {
-      ardTabWTE.classList.add('active'); ardTabBRG.classList.remove('active');
-      ardWTEPanel.style.display = ''; ardBRGPanel.style.display = 'none';
-    });
-    ardTabBRG.addEventListener('click', () => {
-      ardTabBRG.classList.add('active'); ardTabWTE.classList.remove('active');
-      ardBRGPanel.style.display = ''; ardWTEPanel.style.display = 'none';
-    });
+    function switchArdTab(active) {
+      [ardTabWTE, ardTabBRG].forEach(t => t.classList.remove('active'));
+      [ardWTEPanel, ardBRGPanel].forEach(p => p.style.display = 'none');
+      active.tab.classList.add('active');
+      active.panel.style.display = '';
+      if (active.onShow) active.onShow();
+    }
+
+    ardTabWTE.addEventListener('click', () => switchArdTab({ tab: ardTabWTE, panel: ardWTEPanel }));
+    ardTabBRG.addEventListener('click', () => switchArdTab({ tab: ardTabBRG, panel: ardBRGPanel, onShow: renderBRG }));
 
     // ── Language toggle ───────────────────────────────
     const langEnBtn = document.getElementById('lang-en-btn');
@@ -1680,6 +1748,74 @@
 
     langViBtn.addEventListener('click', () => switchLang('VI'));
     langEnBtn.addEventListener('click', () => switchLang('EN'));
+
+    // ── EARLY sheet — Projects & Fundraising + BRG ───────
+    // Columns: A=NAME B=TYPE C=FUNDRAISED D=VC E=ROLE(yes/no)
+    const EARLY_URL  = 'https://docs.google.com/spreadsheets/d/1m8_nwbP_Apw43Y8iNxOoGFYy8YA-OpchGnVRfTMBUAo/gviz/tq?tqx=out:csv&sheet=EARLY';
+    const TIER1_VCS  = ['a16z','andreessen','paradigm','binance labs','coinbase ventures','sequoia','polychain','pantera','dragonfly','multicoin','spartan','delphi','framework','electric capital'];
+    let earlyRows    = [];
+    let earlyLoaded  = false;
+
+    function parseAmount(str) {
+      const s = String(str || '').replace(/\s/g, '').toUpperCase();
+      const m = s.match(/\$?([\d.]+)([BMK]?)/);
+      if (!m) return 0;
+      let v = parseFloat(m[1]);
+      if (m[2] === 'B') v *= 1000;
+      if (m[2] === 'K') v /= 1000;
+      return v;
+    }
+
+    function calcRating(row) {
+      let stars = 0;
+      const amt  = parseAmount(row[2]);
+      if (amt >= 150)     stars += 3;
+      else if (amt >= 40) stars += 2;
+      else if (amt > 0)   stars += 1;
+      const type = (row[1] || '').toLowerCase().trim();
+      if (type === 'l1' || type === 'l2') stars += 1;
+      if (type === 'stablechain')          stars += 2;
+      const vcs = (row[3] || '').toLowerCase();
+      if (TIER1_VCS.some(v => vcs.includes(v))) stars += 1;
+      if (stars >= 5) return '★★★';
+      if (stars >= 3) return '★★';
+      return '★';
+    }
+
+    async function loadEarly() {
+      if (earlyLoaded) return;
+      const res  = await fetch(EARLY_URL);
+      const text = await res.text();
+      earlyRows  = parseCSVFull(text).slice(1).filter(r => r[0]);
+      earlyLoaded = true;
+    }
+
+async function renderBRG() {
+      const tbody   = document.getElementById('brg-tbody');
+      const countEl = document.getElementById('brg-count');
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted)">Loading...</td></tr>';
+      try {
+        await loadEarly();
+        const withRole = earlyRows.filter(r => (r[4] || '').toLowerCase().trim() === 'yes');
+        const rated    = withRole.map(r => ({ r, rank: calcRating(r) }))
+          .sort((a, b) => { const o = {S:0,A:1,B:2}; return o[a.rank] - o[b.rank]; });
+        countEl.textContent = rated.length + ' projects';
+        tbody.innerHTML = rated.map(({ r, rank }) => {
+          const cls    = rank === '★★★' ? 'S' : rank === '★★' ? 'A' : 'B';
+          const top3vc = (r[3] || '').replace(/\r/g, '').replace(/,/g, '\n').split('\n').map(v => v.trim()).filter(Boolean).slice(0, 3).join('<br>') || '—';
+          const typeTag = r[1] ? '<span class="brg-type-tag">' + r[1] + '</span>' : '';
+          return '<tr>'
+            + '<td class="pf-td-name">'   + (r[0] || '—') + typeTag + '</td>'
+            + '<td class="pf-td-amount">' + (r[2] || '—') + '</td>'
+            + '<td class="pf-td-vcs">'    + top3vc        + '</td>'
+            + '<td><span class="brg-rank brg-rank--' + cls + '">' + rank + '</span></td>'
+            + '</tr>';
+        }).join('');
+      } catch(err) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted)">Failed to load</td></tr>';
+        console.warn('renderBRG failed:', err);
+      }
+    }
 
     // ── Init ─────────────────────────────────────────
     routeFromPath(); // tất cả biến đã khai báo xong, an toàn để gọi
