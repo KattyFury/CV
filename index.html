@@ -1758,6 +1758,9 @@
 
     function parseAmount(str) {
       const s = String(str || '').replace(/\s/g, '').toUpperCase();
+      if (s === 'S') return 150;
+      if (s === 'A') return 40;
+      if (s === 'B') return 1;
       const m = s.match(/\$?([\d.]+)([BMK]?)/);
       if (!m) return 0;
       let v = parseFloat(m[1]);
