@@ -949,7 +949,7 @@
       <!-- Sub-tabs -->
       <div class="ard-subnav">
         <button class="ard-tab active" id="ard-tab-wte">Work to Earn</button>
-        <button class="ard-tab" id="ard-tab-brg">Best Roles to Grind</button>
+        <button class="ard-tab" id="ard-tab-brg">Safest Roles to Grind</button>
       </div>
 
       <!-- Work to Earn panel -->
@@ -1797,7 +1797,7 @@
       const hasTopVC = (row[3] || '').toLowerCase().trim() === 'yes';
       if (hasTopVC) stars += 1;
       if (stars >= 5) return '★★★';
-      if (stars >= 2) return '★★';
+      if (stars >= 3) return '★★';
       return '★';
     }
 
