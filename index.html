@@ -1229,7 +1229,9 @@
       const midMed    = median(midValues);
 
       // Set active segment on the 5-level indicator
-      const lvlIdx = shortMed > 15 ? 0 : shortMed > 8 ? 1 : shortMed > 4 ? 2 : shortMed > 2 ? 3 : 4;
+      // Thresholds calibrated from historical median4 distribution (68 deals):
+      // Dead <1, Weak 1-2, Normal 2-5, Good 5-10, Uptrend >=10
+      const lvlIdx = shortMed >= 10 ? 0 : shortMed >= 5 ? 1 : shortMed >= 2 ? 2 : shortMed >= 1 ? 3 : 4;
       document.querySelectorAll('#market-levels .mkt-lvl').forEach((el, i) => {
         el.classList.toggle('mkt-active', i === lvlIdx);
       });
