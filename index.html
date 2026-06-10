@@ -376,11 +376,9 @@
       white-space: nowrap;
     }
     .mkt-lvl.mkt-active { opacity: 1; font-weight: 700; font-size: 11px; }
-    .mkt-lvl[data-lvl="0"].mkt-active { background: #8B5CF6; color: #fff; }
-    .mkt-lvl[data-lvl="1"].mkt-active { background: #3B82F6; color: #fff; }
-    .mkt-lvl[data-lvl="2"].mkt-active { background: #22C55E; color: #fff; }
-    .mkt-lvl[data-lvl="3"].mkt-active { background: #FFD447; color: #1a1a1a; }
-    .mkt-lvl[data-lvl="4"].mkt-active { background: #FF5A36; color: #1a1a1a; }
+    .mkt-lvl[data-lvl="0"].mkt-active { background: #22C55E; color: #fff; }
+    .mkt-lvl[data-lvl="1"].mkt-active { background: #FFD447; color: #1a1a1a; }
+    .mkt-lvl[data-lvl="2"].mkt-active { background: #FF5A36; color: #1a1a1a; }
     /* split-box luôn trắng dù card đổi màu */
     #market-terms { background: #fff; }
 
@@ -819,11 +817,9 @@
             </div>
           </div>
           <div class="market-levels" id="market-levels">
-            <div class="mkt-lvl" data-lvl="0">Uptrend</div>
-            <div class="mkt-lvl" data-lvl="1">Good</div>
-            <div class="mkt-lvl" data-lvl="2">Normal</div>
-            <div class="mkt-lvl" data-lvl="3">Weak</div>
-            <div class="mkt-lvl" data-lvl="4">Dead</div>
+            <div class="mkt-lvl" data-lvl="0">Strong</div>
+            <div class="mkt-lvl" data-lvl="1">Normal</div>
+            <div class="mkt-lvl" data-lvl="2">Weak</div>
           </div>
         </div>
 
@@ -1228,15 +1224,15 @@
       const midValues = validM.slice(0, midN).map(x => x.m);
       const midMed    = median(midValues);
 
-      // Set active segment on the 5-level indicator
-      // Thresholds calibrated from historical median4 distribution (68 deals):
-      // Dead <1, Weak 1-2, Normal 2-5, Good 5-10, Uptrend >=10
-      const lvlIdx = shortMed >= 10 ? 0 : shortMed >= 5 ? 1 : shortMed >= 2 ? 2 : shortMed >= 1 ? 3 : 4;
+      // Set active segment on the 3-level indicator
+      // Thresholds calibrated from era-based reference periods:
+      // Strong (2023-2024 cycle) >=13, Normal (2022 baseline) 4.3-13, Weak (2025-2026) <4.3
+      const lvlIdx = shortMed >= 13 ? 0 : shortMed >= 4.3 ? 1 : 2;
       document.querySelectorAll('#market-levels .mkt-lvl').forEach((el, i) => {
         el.classList.toggle('mkt-active', i === lvlIdx);
       });
       // Tint card background to match market level
-      const mktCardBg = ['rgba(139,92,246,0.10)','rgba(59,130,246,0.09)','rgba(34,197,94,0.09)','rgba(255,212,71,0.14)','rgba(255,90,54,0.12)'];
+      const mktCardBg = ['rgba(34,197,94,0.09)','rgba(255,212,71,0.14)','rgba(255,90,54,0.12)'];
       const mktCard = document.getElementById('market-card');
       if (mktCard) mktCard.style.background = mktCardBg[lvlIdx] || '';
 

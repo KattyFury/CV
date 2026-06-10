@@ -78,8 +78,11 @@ vcFDV = fundraising / (vcAlloc / 100)
 ### Market Condition
 
 - `shortMed` = median của 4 ×TGE gần nhất
-- 5 levels: Dead (<1×) / Weak (1-2×) / Normal (2-5×) / Good (5-10×) / Uptrend (≥10×)
-- Ngưỡng calibrate từ phân phối median4 trên 68 deal lịch sử (Normal là nhóm đông nhất) + đối chiếu Q1/2023 (ARB) và Q1/2024 (MANTA/ALT/STRK) — các giai đoạn uptrend thực tế có median4 ~13.5-16.5, đều ≥10.
+- 3 levels: Weak (<4.3×) / Normal (4.3-13×) / Strong (≥13×)
+- Ngưỡng calibrate theo các giai đoạn thị trường thực tế (không phải phân phối thống kê thuần, vì 2025-2026 chiếm phần lớn data nhưng đó là do thiếu data cũ 2018-2024, không phản ánh đúng "bình thường"):
+  - Strong  ≈ Q4/2022-Q1/2023 (HOOK+ARB, median ~21.7), Q4/2023-Q1/2024 (median ~16) → ≥13
+  - Normal  ≈ Q2-Q3/2022 (OP, ~4.8) → 4.3-13
+  - Weak    ≈ 2025 (median ~3.9), 2026 (median ~2.95) → <4.3
 
 ---
 
@@ -169,6 +172,7 @@ git add index.html && git commit -m "..." && git push
 
 - 2026-06-10: Cập nhật mapping cột CSV trong `index.html` (`fetchPublicData`) để khớp với cột mới của Google Sheet tab DATA — reason: Sheet đã đổi thứ tự cột (TGE DATE chuyển từ G ra A, các cột khác dồn theo), khiến `fundraising` luôn = 0 → toàn bộ data bị filter, bảng Valuation trống trên 0xhieu.xyz.
 - 2026-06-10: Đổi ngưỡng Market Condition `lvlIdx` từ `[2,4,8,15]` sang `[1,2,5,10]` (Dead/Weak/Normal/Good/Uptrend) — reason: phân tích median4 của 68 deal lịch sử cho thấy ngưỡng cũ làm Normal quá hẹp, không phải nhóm đông nhất; ngưỡng mới giữ Normal là nhóm đông nhất và Uptrend (≥10) khớp với các giai đoạn uptrend thực tế (Q1/2023, Q1/2024 có median4 ~13.5-16.5).
+- 2026-06-10: Đổi tiếp Market Condition từ 5 levels (Dead/Weak/Normal/Good/Uptrend) sang 3 levels (Weak/Normal/Strong), ngưỡng `[4.3, 13]` — reason: "Normal nhiều nhất" mâu thuẫn với cảm nhận thực tế của user, vì 2025-2026 chiếm 72% data (do thiếu data 2018-2024) khiến median tổng thể trùng với giai đoạn user coi là tệ. Calibrate lại theo giai đoạn: Strong≈chu kỳ 2023-2024 (≥13), Normal≈Q2-Q3/2022 (4.3-13), Weak≈2025-2026 (<4.3).
 
 ---
 
