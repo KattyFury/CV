@@ -437,17 +437,21 @@
     .calc-btn-field .calc-btn { width: 100%; }
     #calc-result {
       position: relative;
+      margin-top: 6px;
       background: linear-gradient(135deg, rgba(255,161,17,0.12), rgba(255,161,17,0.02));
       border: 1px solid rgba(255,161,17,0.25);
-      border-radius: 10px;
-      padding: 8px 10px;
+      border-radius: 8px;
+      padding: 10px;
       box-sizing: border-box;
     }
-    #calc-res-sub { line-height: 1.4; padding-right: 18px; }
-    #calc-res-sub .res-expected {
-      font-size: 18px; font-weight: 700; letter-spacing: -0.03em; color: var(--text);
+    #calc-res-sub {
+      display: flex; flex-direction: column; gap: 4px;
+      padding-right: 18px;
     }
-    #calc-res-sub .res-price { font-size: 11px; color: var(--muted); margin-left: 4px; }
+    #calc-res-sub .res-expected {
+      font-size: 16px; font-weight: 700; letter-spacing: -0.03em; color: var(--text); line-height: 1;
+    }
+    #calc-res-sub .res-price { font-size: 11px; color: var(--muted); line-height: 1.5; }
     .calc-reset-btn {
       position: absolute; top: 6px; right: 8px;
       width: 18px; height: 18px; line-height: 18px; text-align: center;
