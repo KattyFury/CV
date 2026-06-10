@@ -1370,29 +1370,10 @@
       const maxC = Math.max(...clean);
       const base_mult = Math.max(minC, Math.min(maxC, wMed));
 
-      // STEP 7 — Market compression
-      const mktMap = { 'Very Strong': 1.10, 'Strong': 1.00, 'Neutral': 0.85, 'Weak': 0.70, 'Very Weak': 0.55 };
-      const compressed = base_mult * mktMap[regime];
-
-      // STEP 8 — FDV penalty (log-based, regime k)
-      const kMap = { 'Very Strong': 0.18, 'Strong': 0.23, 'Neutral': 0.30, 'Weak': 0.45, 'Very Weak': 0.65 };
-      const approxTGE   = compressed * vcFDV;
-      const base_penalty = 1 + kMap[regime] * Math.log10(Math.max(1, approxTGE / 1e8));
-      const safeP = Math.max(0.1, base_penalty);
-
-      // STEP 9 — Liquidity cliff (extra penalty above $1B TGE FDV)
-      const cliff = approxTGE > 1e9
-        ? 1 + 0.25 * Math.log10(approxTGE / 1e9)
-        : 1;
-      const safeCliff = Math.max(1, cliff);
-
-      // STEP 10 — Final multiple
-      const finalMult = compressed / (safeP * safeCliff);
-
-      // STEP 11 — Outputs
-      const exp = vcFDV * finalMult;
-      const lo  = vcFDV * Math.max(0.05, minC * mktMap[regime] / (safeP * safeCliff));
-      const hi  = vcFDV * (maxC * mktMap[regime] / (safeP * safeCliff));
+      // STEP 7 — Outputs (final multiple = base_mult, already bucket+recency-aware)
+      const exp = vcFDV * base_mult;
+      const lo  = vcFDV * minC;
+      const hi  = vcFDV * maxC;
       const note = `${regime} regime · ${valid.length} data pts`;
 
       return { exp, lo, hi, note };
