@@ -446,17 +446,17 @@
     }
     #calc-res-sub {
       display: flex; flex-direction: column; gap: 4px;
-      padding-right: 18px;
+      padding-left: 28px;
     }
     #calc-res-sub .res-expected {
       font-size: 16px; font-weight: 700; letter-spacing: -0.03em; color: var(--text); line-height: 1;
     }
     #calc-res-sub .res-price { font-size: 11px; color: var(--muted); line-height: 1.5; }
     .calc-reset-btn {
-      position: absolute; top: 6px; right: 8px;
-      width: 18px; height: 18px; line-height: 18px; text-align: center;
+      position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+      width: 24px; height: 24px; line-height: 24px; text-align: center;
       background: none; border: none; font-family: inherit;
-      font-size: 14px; color: var(--muted); cursor: pointer; padding: 0;
+      font-size: 18px; color: var(--muted); cursor: pointer; padding: 0;
     }
     .calc-reset-btn:hover { color: var(--text); }
 
