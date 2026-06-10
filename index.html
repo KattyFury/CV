@@ -955,7 +955,7 @@
     window.addEventListener('popstate', routeFromPath);
 
     // ── Data layer — Google Sheets (read-only) ────────
-    // Columns: A=project, B=type, C=ticker, D=fundraised($M), E=vcAlloc(%), F=totalSupply, G=tgeDate, H=priceTGE, I=vcMultiple(ignored, recalculated)
+    // Columns: A=tgeDate, B=ticker, C=cgId, D=type, E=fundraising($), F=vcAlloc(%), G=totalSupply, H=priceTGE, J=ath, N=currentPrice
     const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1m8_nwbP_Apw43Y8iNxOoGFYy8YA-OpchGnVRfTMBUAo/gviz/tq?tqx=out:csv&sheet=DATA';
 
     let publicData = [];
@@ -1002,15 +1002,15 @@
               return parseFloat(v) || 0;
             };
             return {
-              ticker:      (r[0] || '').replace(/^\$/, '').toUpperCase(), // col A
-              cgId:        (r[1] || '').trim().toLowerCase(),              // col B: CoinGecko ID
-              type:        r[2] || '',                                     // col C
-              fundraising: parseMoney(r[3]),                               // col D
-              vcAlloc:     num(r[4]),                                      // col E: percent
-              totalSupply: parseSupply(r[5]) || 0,                        // col F
-              tgeDate:     normalizeDate(r[6]),                            // col G
+              tgeDate:     normalizeDate(r[0]),                            // col A
+              ticker:      (r[1] || '').replace(/^\$/, '').toUpperCase(), // col B
+              cgId:        (r[2] || '').trim().toLowerCase(),              // col C: CoinGecko ID
+              type:        r[3] || '',                                     // col D
+              fundraising: parseMoney(r[4]),                               // col E
+              vcAlloc:     num(r[5]),                                      // col F: percent
+              totalSupply: parseSupply(r[6]) || 0,                        // col G
               priceTGE:     num(r[7]),                                     // col H
-              ath:          num(r[11]),                                    // col L
+              ath:          num(r[9]),                                    // col J
               currentPrice: num(r[13]),                                   // col N
             };
           })
