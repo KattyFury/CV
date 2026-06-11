@@ -359,6 +359,28 @@
       color: var(--text); margin-bottom: 12px;
     }
 
+    /* ── DANGER ZONE ────────────────────────────────── */
+    .danger-sub {
+      font-size: 10px; font-weight: 400; color: var(--muted);
+      margin-left: 6px; letter-spacing: 0;
+    }
+    .danger-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 8px; border-radius: 6px;
+      background: rgba(255,90,54,0.08);
+      margin-bottom: 4px;
+    }
+    .danger-row.danger-new { background: rgba(255,90,54,0.18); }
+    .danger-ticker { font-size: 12px; font-weight: 700; color: var(--text); flex: 1; }
+    .danger-badge-new {
+      font-size: 9px; font-weight: 800; letter-spacing: 0.05em;
+      color: #fff; background: #FF5A36;
+      padding: 1px 5px; border-radius: 4px;
+    }
+    .danger-multi { font-size: 12px; font-weight: 700; color: #FF5A36; }
+    .danger-date  { font-size: 10px; color: var(--muted); width: 60px; text-align: right; }
+    .danger-empty { font-size: 12px; color: var(--muted); padding: 8px 0; }
+
     .baseline-num {
       font-size: 26px; font-weight: 700;
       letter-spacing: -0.04em; color: var(--text); line-height: 1.2;
@@ -884,6 +906,17 @@
         </div>
 
       </div>
+
+      <!-- ROW 2: Advanced boxes — Danger Zone -->
+      <div class="val-analysis" style="margin-top:8px">
+
+        <!-- 4. Danger Zone -->
+        <div class="val-card" id="danger-card">
+          <div class="val-card-label calc-card-label">🔴 Danger Zone <span class="danger-sub">×ATM ≥ 15</span></div>
+          <div id="danger-list"></div>
+        </div>
+
+      </div>
     </div>
   </div>
 
@@ -1282,7 +1315,35 @@
       highEl.textContent = highFDVMults.length ? `×${median(highFDVMults).toFixed(2)}` : '—';
     }
 
-    function renderAll() { renderTable(); renderAnalysis(); }
+    // ── Danger Zone: token đang ở ×ATM ≥ 15 — VC lãi quá lớn, sell pressure cực đại ──
+    // TGE < 30 ngày mà đã vào vùng này = pump láo, cảnh báo đặc biệt
+    function renderDanger() {
+      const listEl = document.getElementById('danger-list');
+      const ALERT_DAYS = 30 * 24 * 3600 * 1000;
+      const now = Date.now();
+
+      const danger = allEntries()
+        .map(e => ({ e, xATM: xMult(e.currentPrice, e) }))
+        .filter(x => x.xATM >= 15)
+        .sort((a, b) => new Date(b.e.tgeDate) - new Date(a.e.tgeDate)); // mới nhất lên đầu
+
+      if (!danger.length) {
+        listEl.innerHTML = '<div class="danger-empty">No tokens in danger zone</div>';
+        return;
+      }
+
+      listEl.innerHTML = danger.map(({ e, xATM }) => {
+        const isAlert = now - new Date(e.tgeDate) < ALERT_DAYS;
+        return `<div class="danger-row${isAlert ? ' danger-new' : ''}">
+          <span class="danger-ticker">${e.ticker}</span>
+          ${isAlert ? '<span class="danger-badge-new">⚠ FAKE PUMP</span>' : ''}
+          <span class="danger-multi">×${xATM.toFixed(1)}</span>
+          <span class="danger-date">${fmtDate(e.tgeDate)}</span>
+        </div>`;
+      }).join('');
+    }
+
+    function renderAll() { renderTable(); renderAnalysis(); renderDanger(); }
 
     // ── Weighted median ───────────────────────────────
     function weightedMedian(items) {
