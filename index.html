@@ -548,6 +548,7 @@
       border-radius: 14px; overflow: hidden;
     }
     /* Rank-tinted backgrounds */
+    .wte-card--Splus { background: #fff; border-color: #e0e0e0; }
     .wte-card--S { background: #fff; border-color: #e0e0e0; }
     .wte-card--A { background: #fff; border-color: #e0e0e0; }
     .wte-card--B { background: #fff; border-color: #e0e0e0; }
@@ -572,6 +573,7 @@
       padding: 2px 8px; border-radius: 6px;
       flex-shrink: 0;
     }
+    .rank-Splus { background: #8B5CF6; color: #fff; }
     .rank-S { background: #FF5A36; color: #fff; }
     .rank-A { background: #FFA111; color: #fff; }
     .rank-B { background: #FFD447; color: #fff; }
@@ -594,6 +596,7 @@
 
 
     /* Section labels follow rank */
+    .wte-card--Splus .wte-section-label { color: #8B5CF6; }
     .wte-card--S .wte-section-label { color: #FF5A36; }
     .wte-card--A .wte-section-label { color: #FFA111; }
     .wte-card--B .wte-section-label { color: #c8a000; }
@@ -618,6 +621,7 @@
     .wte-section--daily .wte-task-text { color: var(--text); font-weight: 500; }
 
     /* Daily — xám nhạt chữ đen, border-left giữ màu rank */
+    .wte-card--Splus .wte-section--daily { background: rgba(139,92,246,0.12); border-left-color: #8B5CF6; }
     .wte-card--S .wte-section--daily { background: rgba(255,90,54,0.12);  border-left-color: #FF5A36; }
     .wte-card--A .wte-section--daily { background: rgba(255,161,17,0.12); border-left-color: #FFA111; }
     .wte-card--B .wte-section--daily { background: rgba(255,212,71,0.20); border-left-color: #FFD447; }
@@ -730,6 +734,20 @@
 
     .personal-tab-panel { display: none; }
     .personal-tab-panel.active { display: block; }
+
+    #x-summary { grid-template-columns: 1fr 1fr 1fr; margin-bottom: 16px; }
+    #x-summary .val-card { text-align: center; }
+    #x-summary .x-stat-val { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+    #x-summary .val-card-label { margin-bottom: 4px; }
+
+    .x-table th, .x-table td { width: auto; white-space: normal; }
+    .x-table th:first-child, .x-table td:first-child { width: 90px; white-space: nowrap; }
+    .x-table th:nth-child(2), .x-table td:nth-child(2) {
+      max-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .x-table th:nth-child(n+3), .x-table td:nth-child(n+3) { width: 64px; text-align: right; white-space: nowrap; }
+    .x-table td a { color: var(--sub); text-decoration: none; }
+    .x-table td a:hover { color: var(--accent); }
 
   </style>
 </head>
@@ -1015,11 +1033,24 @@
         </div>
 
         <div class="personal-tab-panel active" id="ptab-x-panel">
-          <div class="ard-coming-soon">
-            <div class="ard-cs-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          <div class="val-analysis" id="x-summary"></div>
+          <div class="val-table-section">
+            <div class="val-table-scroll">
+              <table class="val-table x-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Post</th>
+                    <th>Impr.</th>
+                    <th>Eng. rate</th>
+                    <th>Like</th>
+                    <th>RT</th>
+                    <th>Reply</th>
+                  </tr>
+                </thead>
+                <tbody id="x-tbody"></tbody>
+              </table>
             </div>
-            <div class="ard-cs-text">X analysis — coming soon</div>
           </div>
         </div>
         <div class="personal-tab-panel" id="ptab-watchlist-panel">
@@ -1126,6 +1157,7 @@
         personalLock.style.display = 'none';
         personalContent.style.display = '';
         personalPwError.textContent = '';
+        loadXAnalysis();
       } else {
         personalPwError.textContent = 'Incorrect password';
       }
@@ -1139,6 +1171,7 @@
     if (sessionStorage.getItem('personal_unlocked') === '1') {
       personalLock.style.display = 'none';
       personalContent.style.display = '';
+      loadXAnalysis();
     }
 
     // ── Personal view — sub-tab switching ────────────
@@ -1157,6 +1190,69 @@
         document.getElementById(panel).classList.add('active');
       });
     });
+
+    // ── Personal view — X analysis ───────────────────
+    let xAnalysisLoaded = false;
+
+    async function loadXAnalysis() {
+      if (xAnalysisLoaded) return;
+      xAnalysisLoaded = true;
+
+      const summary = document.getElementById('x-summary');
+      const tbody   = document.getElementById('x-tbody');
+
+      try {
+        const res = await fetch('/api/x-analysis');
+        const data = await res.json();
+        if (!data.data) throw new Error(data.title || 'API error');
+
+        const tweets = data.data;
+        const rates = tweets.map(t => {
+          const m = t.public_metrics;
+          const eng = m.like_count + m.retweet_count + m.reply_count + m.quote_count;
+          return m.impression_count > 0 ? eng / m.impression_count : 0;
+        });
+        const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+        const totalImpr = tweets.reduce((a, t) => a + t.public_metrics.impression_count, 0);
+
+        summary.innerHTML = `
+          <div class="val-card">
+            <div class="val-card-label calc-card-label">Posts</div>
+            <div class="x-stat-val">${tweets.length}</div>
+          </div>
+          <div class="val-card">
+            <div class="val-card-label calc-card-label">Avg engagement rate</div>
+            <div class="x-stat-val">${(avgRate * 100).toFixed(1)}%</div>
+          </div>
+          <div class="val-card">
+            <div class="val-card-label calc-card-label">Total impressions</div>
+            <div class="x-stat-val">${totalImpr.toLocaleString()}</div>
+          </div>
+        `;
+
+        tbody.innerHTML = tweets.map((t, i) => {
+          const m = t.public_metrics;
+          const eng = m.like_count + m.retweet_count + m.reply_count + m.quote_count;
+          const rate = m.impression_count > 0 ? (eng / m.impression_count * 100).toFixed(1) : '—';
+          const date = new Date(t.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+          const text = t.text.replace(/\s+/g, ' ').trim();
+          const url = `https://x.com/nguyen0xhieu/status/${t.id}`;
+          return `
+            <tr>
+              <td>${date}</td>
+              <td><a href="${url}" target="_blank" rel="noopener" title="${text.replace(/"/g, '&quot;')}">${text}</a></td>
+              <td>${m.impression_count.toLocaleString()}</td>
+              <td>${rate}%</td>
+              <td>${m.like_count}</td>
+              <td>${m.retweet_count}</td>
+              <td>${m.reply_count}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="7" class="val-empty">Failed to load: ${e.message}</td></tr>`;
+      }
+    }
 
     // ── Data layer — Google Sheets (read-only) ────────
     // Columns: A=tgeDate, B=ticker, C=cgId, D=type, E=fundraising($), F=vcAlloc(%), G=totalSupply, H=priceTGE, J=ath, N=currentPrice
@@ -1766,8 +1862,8 @@
         if (weekly) current.weekly.push({     text: weekly, link: weeklyLink });
       }
 
-      // Sort: S → A → B → others
-      const rankOrder = { S: 0, A: 1, B: 2 };
+      // Sort: S+ → S → A → B → others
+      const rankOrder = { 'S+': 0, S: 1, A: 2, B: 3 };
       projects.sort((a, b) => (rankOrder[a.rank] ?? 9) - (rankOrder[b.rank] ?? 9));
 
       return projects;
@@ -1869,13 +1965,14 @@
         const nameHtml = p.twitter
           ? `<a class="wte-name" href="${p.twitter}" target="_blank" rel="noopener">${p.name}</a>`
           : `<span class="wte-name">${p.name}</span>`;
-        return `<div class="wte-card wte-card--${p.rank}">
+        const rc = p.rank.replace('+', 'plus');
+        return `<div class="wte-card wte-card--${rc}">
           <div class="wte-card-head">
             ${logoHtml}
             ${nameHtml}
             <div class="wte-card-meta">
               ${p.type ? `<span class="wte-type">${p.type}</span>` : ''}
-              <span class="wte-rank rank-${p.rank}">${{S:'★★★',A:'★★',B:'★'}[p.rank]||p.rank}</span>
+              <span class="wte-rank rank-${rc}">${{'S+':'★★★★',S:'★★★',A:'★★',B:'★'}[p.rank]||p.rank}</span>
             </div>
           </div>
           ${section('Get Started', p.getStarted, 'getStarted')}
@@ -1884,9 +1981,9 @@
         </div>`;
       };
 
-      const groups = { S: [], A: [], B: [] };
+      const groups = { 'S+': [], S: [], A: [], B: [] };
       projects.forEach(p => { if (groups[p.rank]) groups[p.rank].push(p); });
-      container.innerHTML = ['S','A','B']
+      container.innerHTML = ['S+','S','A','B']
         .filter(r => groups[r].length)
         .map(r => `<div class="wte-rank-group wte-rank-group--${r}">${groups[r].map(cardHtml).join('')}</div>`)
         .join('');
