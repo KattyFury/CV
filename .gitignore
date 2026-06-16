@@ -1,5 +1,6 @@
 .env
 .env.txt
 *.env
+.dev.vars
 .claude/
 node_modules/
