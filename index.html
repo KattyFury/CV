@@ -499,11 +499,12 @@
     .ard-subtabs {
       display: flex; gap: 8px;
       border-bottom: 1px solid var(--border);
-      padding-top: 18px; margin-bottom: 0;
+      padding-top: 8px; margin-bottom: 0;
     }
     .ard-subtab-btn {
       background: none; border: none; cursor: pointer;
       font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 500;
+      letter-spacing: -0.01em;
       color: var(--muted); padding: 10px 4px; margin-bottom: -1px;
       border-bottom: 2px solid transparent;
       transition: color 0.15s, border-color 0.15s;
@@ -720,7 +721,6 @@
 
     /* ── PERSONAL VIEW ────────────────────────────── */
     /* ── WATCHLIST VIEW ──────────────────────────────── */
-    #watchlist-view { display: none; }
 
     .wl-wrap {
       max-width: 900px; margin: 0 auto;
@@ -752,7 +752,7 @@
       border: 1px solid var(--border);
       border-radius: 6px; background: var(--white);
       color: var(--sub); cursor: pointer;
-      padding: 5px 12px;
+      padding: 4px 12px;
       transition: border-color 0.15s, color 0.15s;
     }
     .wl-admin-btn:hover, .wl-add-btn:hover {
@@ -2564,7 +2564,7 @@
         wteData.VI = parseWTE(text);
         wteLoaded.VI = true;
         // re-render watchlist nếu đang mở để cập nhật arrow màu
-        if (document.getElementById('watchlist-view').style.display !== 'none') wlRender();
+        if (document.getElementById('ard-wl-panel')?.classList.contains('active')) wlRender();
       } catch (err) {
         console.warn('WTE fetch failed:', err);
         wteData.VI = [];
