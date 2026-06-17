@@ -712,8 +712,8 @@
 
     .wl-header {
       display: flex; align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
+      justify-content: flex-end;
+      margin-bottom: 0;
     }
 
     .wl-title {
@@ -1212,11 +1212,10 @@
   <div id="watchlist-view" style="display:none">
     <div class="wl-wrap">
 
-      <div class="val-intro">Tracking pre-TGE opportunities</div>
-      <div class="wl-header">
-        <div class="wl-header-right" id="wl-header-right">
+      <div style="position:relative">
+        <div class="val-intro">Tracking pre-TGE opportunities</div>
+        <div id="wl-header-right" style="position:absolute;top:50%;right:0;transform:translateY(-50%);display:flex;align-items:center;gap:8px">
           <span class="wl-progress-text" id="wl-progress"></span>
-          <!-- gate: static, toggled by JS -->
           <span id="wl-gate-inline" style="display:none;align-items:center;gap:6px">
             <input type="password" id="wl-pw" placeholder="Password"
               style="font-family:'Roboto',sans-serif;font-size:13px;border:1px solid var(--border);
