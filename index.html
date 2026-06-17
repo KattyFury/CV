@@ -1622,15 +1622,25 @@
         if (body.data && body.data.length) {
           wlProjects = body.data;
           wlLoadStorage(); // still load wlUser from localStorage
-          wlSaveStorage(); // sync KV data into localStorage
+          localStorage.setItem(WL_DATA_KEY, JSON.stringify(wlProjects));
           wlRender();
           return;
         }
       } catch {}
 
+      // KV empty — load localStorage and push it up to KV
       wlLoadStorage();
       const hasLogos = wlProjects.length > 0 && wlProjects[0].logo_url;
-      if (wlProjects.length && hasLogos) { wlRender(); return; }
+      if (wlProjects.length && hasLogos) {
+        // migrate: save localStorage data to KV so other devices get it
+        fetch('/api/watchlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'kv-save', data: wlProjects }),
+        }).catch(() => {});
+        wlRender();
+        return;
+      }
       wlInitialFetch();
     }
 
