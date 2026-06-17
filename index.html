@@ -1218,6 +1218,7 @@
             <button id="wl-pw-submit" class="wl-gate-submit">Unlock</button>
             <span id="wl-gate-error" class="wl-gate-error"></span>
           </span>
+          <button class="wl-add-btn" id="wl-clean-btn" style="display:none" title="Remove TGE'd projects">🧹</button>
           <button class="wl-add-btn" id="wl-sync-btn" style="display:none" title="Sync from Surf API">↻</button>
           <button class="wl-add-btn" id="wl-add-btn" style="display:none" title="Add project">+</button>
           <button class="wl-admin-btn" id="wl-admin-btn">Admin</button>
@@ -1408,6 +1409,7 @@
     }
 
     const wlAdminBtn   = document.getElementById('wl-admin-btn');
+    const wlCleanBtn   = document.getElementById('wl-clean-btn');
     const wlSyncBtn    = document.getElementById('wl-sync-btn');
     const wlAddBtn     = document.getElementById('wl-add-btn');
     const wlGateInline = document.getElementById('wl-gate-inline');
@@ -1600,9 +1602,10 @@
       if (wlPwInput.value === WL_PW) {
         wlAdmin = true;
         wlHideGate();
-        wlAdminBtn.textContent  = 'Logout';
-        wlSyncBtn.style.display = '';
-        wlAddBtn.style.display  = '';
+        wlAdminBtn.textContent   = 'Logout';
+        wlCleanBtn.style.display = '';
+        wlSyncBtn.style.display  = '';
+        wlAddBtn.style.display   = '';
         wlRender();
       } else {
         wlGateError.textContent = 'Wrong password';
@@ -1620,9 +1623,10 @@
     wlAdminBtn.addEventListener('click', () => {
       if (wlAdmin) {
         wlAdmin = false;
-        wlAdminBtn.textContent  = 'Admin';
-        wlSyncBtn.style.display = 'none';
-        wlAddBtn.style.display  = 'none';
+        wlAdminBtn.textContent   = 'Admin';
+        wlCleanBtn.style.display = 'none';
+        wlSyncBtn.style.display  = 'none';
+        wlAddBtn.style.display   = 'none';
         wlAddForm.style.display = 'none';
         wlRender();
         return;
@@ -1721,6 +1725,9 @@
             const ov    = dBody.data?.overview || {};
             const fund  = dBody.data?.funding  || {};
 
+            // skip nếu đã TGE
+            if (ov.tge_status === 'post') continue;
+
             const backers = (fund.rounds || [])
               .flatMap(r => (r.investors || []).map(inv => inv.name))
               .filter((v, i, a) => a.indexOf(v) === i);
@@ -1757,6 +1764,34 @@
     }
 
     wlSyncBtn.addEventListener('click', wlSync);
+
+    // ── Clean: xóa dự án đã TGE ──────────────────────
+    async function wlClean() {
+      wlCleanBtn.disabled = true;
+      wlProgress.textContent = 'Checking TGE status...';
+      let removed = 0;
+
+      for (let i = wlProjects.length - 1; i >= 0; i--) {
+        const p = wlProjects[i];
+        wlProgress.textContent = `Checking ${p.name}...`;
+        try {
+          const r = await fetch('/api/watchlist?action=detail&q=' + encodeURIComponent(p.name));
+          const d = await r.json();
+          if (d.data?.overview?.tge_status === 'post') {
+            wlProjects.splice(i, 1);
+            removed++;
+          }
+        } catch { /* skip */ }
+      }
+
+      wlSaveStorage();
+      wlRender();
+      wlProgress.textContent = removed ? `Removed ${removed} TGE'd project${removed > 1 ? 's' : ''}.` : 'All projects are still pre-TGE.';
+      setTimeout(() => { wlProgress.textContent = ''; }, 4000);
+      wlCleanBtn.disabled = false;
+    }
+
+    wlCleanBtn.addEventListener('click', wlClean);
 
     // ── Personal view — password gate ────────────────
     const PERSONAL_PASSWORD = 'hieu1403';

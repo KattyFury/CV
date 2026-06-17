@@ -607,5 +607,24 @@
     ],
     "x_handle": "opensea",
     "logo_url": "https://images.asksurf.ai/3Dmy2QxgekNlUW0QDUjy5acRG2kLldS7S8_ryQnvHso/aHR0cHM6Ly9wYnMudHdpbWcuY29tL3Byb2ZpbGVfaW1hZ2VzLzIwMTQ5NTgxNjUwNTA1MDcyNjQvZHZiT0xOTEwuanBn"
+  },
+  {
+    "id": 42,
+    "name": "Ritual",
+    "category": "Web3 AI, Compute",
+    "raise": "$25M",
+    "raise_num": 25000000,
+    "round": "Seed",
+    "date": "",
+    "backers": [
+      "Polychain Capital",
+      "Hack VC",
+      "Balaji Srinivasan",
+      "Robot Ventures",
+      "Dialectic Capital",
+      "Accel"
+    ],
+    "x_handle": "ritualnet",
+    "logo_url": "https://images.asksurf.ai/EOHlmtEVqrdVWTRFbbbuVFybc7NUQIu4UuTfXs8bqRo/aHR0cHM6Ly9wYnMudHdpbWcuY29tL3Byb2ZpbGVfaW1hZ2VzLzIwNDc3NjE5MzM3NjQyNjgwMzIvbHRkWk91bHEuanBn"
   }
 ]
