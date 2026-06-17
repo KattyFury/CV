@@ -1,17 +1,18 @@
 # HANDOFF — CV / Portfolio (0xhieu.xyz)
 
-**Date:** 2026-06-11  
+**Date:** 2026-06-17  
 **Repo:** https://github.com/KattyFury/CV  
 **Live:** Cloudflare Pages (auto-deploy từ main branch)  
-**Local:** `node server.js` → http://localhost:8080
+**Local dev:** `npx wrangler pages dev . --port 8788` (cần Cloudflare Functions)
 
 ---
 
 ## Stack
 
 - Static HTML (`index.html`) — toàn bộ site trong 1 file
-- Node.js `server.js` — dev server port 8080, SPA fallback
-- Google Sheets CSV — data source (read-only từ website)
+- Cloudflare Pages Functions (`functions/api/`) — API proxy giữ secret keys
+- Node.js `server.js` — dev server port 8080, SPA fallback (KHÔNG support Functions)
+- Google Sheets CSV — data source cho Valuation + Airdrop tabs
 - Google Apps Script — sync ATH + current price mỗi ngày lúc 2h
 - Puppeteer `export-pdf.js` — xuất toàn trang thành PDF
 
@@ -158,6 +159,60 @@ Cột J (beforeATH) **bỏ trống** — đã thử CoinGecko (401), Binance (45
 
 ---
 
+## Watchlist Tab (mục thứ 3 — giữa Valuation và Airdrop)
+
+**Nav:** About me | Valuation | **Watchlist** | Airdrop  
+**Route:** `/watchlist`
+
+### Data sources
+
+| Source | Mục đích |
+|---|---|
+| `watchlist-data.json` | 42 project tĩnh import từ CSV (Desktop) |
+| `vc-tier1.json` | 33 Tier-1 VC/angel — filter tiêu chuẩn |
+| `functions/api/watchlist.js` | Proxy Surf AI API (giữ `SURF_API` key an toàn) |
+| `localStorage wl_projects_v2` | Cache project data trên browser |
+| `localStorage wl_user_v2` | Participation chips per project |
+
+### Surf AI API
+
+- **Base:** `https://api.asksurf.ai/gateway/v1`
+- **Key:** `SURF_API` trong `.env` (local) + `.dev.vars` (wrangler) + Cloudflare Pages Dashboard (production)
+- **Credits:** ~2,879 remaining, expire 06/2027
+- **Endpoints dùng:**
+  - `GET /search/airdrop?sort_by=total_raise&limit=100&phase=active` — 2 credits, list pre-TGE projects
+  - `GET /project/detail?q=<name>` — 1 credit, full data (investors, tge_status, x_handle, logo)
+
+### Filter logic
+
+Chỉ hiện project có ít nhất 1 backer trong `vc-tier1.json`. Matching dùng substring (case-insensitive) — "a16z CSX" match "a16z".
+
+### Admin mode
+
+Password: `vi2702` (client-side only, không phải bảo mật thật).
+
+Unlock → 3 nút xuất hiện:
+- **🧹 Clean** — gọi `project/detail` cho từng project, xóa nếu `tge_status === 'post'`
+- **↻ Sync** — fetch 100 từ Surf API, check Tier-1 + pre-TGE, thêm project mới
+- **+ Add** — thêm thủ công 1 project theo tên
+
+### Scripts
+
+```bash
+node import-watchlist.js    # parse surf-table*.csv từ Desktop → watchlist-data.json
+node enrich-watchlist.js    # thêm x_handle + logo_url cho project chưa có (cần wrangler chạy)
+```
+
+### Participation chips
+
+4 options per project: **Contribute** (cam) / Point / Retroactive / Yap. Multi-select. Lưu localStorage. Luôn hiển thị đủ 4, option chưa chọn mờ hơn.
+
+### Arrow button
+
+Mũi tên SVG — **cam + bấm được** nếu project có guide trong Airdrop tab (match tên WTE card), **xám + disabled** nếu chưa có. Click → navigate sang Airdrop + scroll đến card + highlight 1.5s.
+
+---
+
 ## Personal Tab (mục thứ 4 cạnh About me/Valuation/Airdrop)
 
 - Nav button "Personal" → password gate client-side (`PERSONAL_PASSWORD = 'hieu1403'`, hardcoded trong `index.html`, không phải bảo mật thật — chỉ chặn người xem thường)
@@ -284,6 +339,12 @@ git add index.html && git commit -m "..." && git push
 - 2026-06-11: Xuất PDF bằng Puppeteer (`export-pdf.js`) với `height = document.body.scrollHeight` — reason: khổ giấy cố định làm PDF bị cắt 3 trang; set height động ra 1 trang liền y chang website.
 
 ---
+
+- 2026-06-17: Build **Watchlist tab** thay thế Personal tab — pre-TGE project tracker dùng Surf AI API. Nav mới: About me | Valuation | Watchlist | Airdrop. Data: static JSON từ CSV + Surf API enrichment + localStorage cho user preferences. Filter: Tier-1 VC list (33 names). Admin mode: password `vi2702`, 3 admin buttons (Clean/Sync/Add).
+
+- 2026-06-17: Dùng `logo_url` từ Surf API thay vì `unavatar.io` — reason: unavatar bị rate-limit 429 khi load 41 ảnh cùng lúc.
+
+- 2026-06-17: Sync button check `shownNames` (Tier-1 filtered) thay vì toàn bộ `wlProjects` — reason: localStorage có thể chứa project không pass Tier-1 từ sync cũ, gây "already up to date" sai.
 
 - 2026-06-16: Thêm rank tier **SS** (★★★★, purple #8B5CF6) vào WTE cards — nằm trên S, sort đầu tiên. Set cột Rank = `SS` trong sheet để dùng.
 
