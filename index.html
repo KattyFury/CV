@@ -859,9 +859,9 @@
     .wl-chip[data-val="yap"].on {
       background: var(--text); border-color: var(--text); color: #fff;
     }
-    /* View mode: non-selected chips hidden, only selected visible */
-    .wl-chips.view-mode .wl-chip:not(.on) { display: none; }
+    /* View mode: always show all 4, non-selected just dimmed */
     .wl-chips.view-mode .wl-chip { cursor: default; }
+    .wl-chips.view-mode .wl-chip:not(.on) { opacity: 0.25; }
 
     .wl-arrow-btn {
       background: none; border: none;
