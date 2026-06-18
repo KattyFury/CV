@@ -313,9 +313,10 @@
     /* ── Bảng mở popup ───────────────────────────────── */
     .val-intro-clickable { cursor: pointer; }
     .val-intro-clickable:hover { color: var(--accent); }
-    /* 2 size popup chuẩn: nhỏ .wl-modal (--modal-w, form) · lớn = ĐÚNG 2× popup nhỏ (nội dung nhiều) */
-    .wl-modal--wide { width: calc(var(--modal-w) * 2); max-width: 92vw; }
-    .wl-modal--wide .wl-modal-title { font-size: 14px; line-height: 1.3; }
+    /* 2 size popup chuẩn: nhỏ .wl-modal (--modal-w, form) · lớn = ĐÚNG 2× popup nhỏ (nội dung nhiều)
+       Dùng .wl-modal.wl-modal--wide (specificity cao hơn) để thắng .wl-modal{width:340px} định nghĩa sau. */
+    .wl-modal.wl-modal--wide { width: calc(var(--modal-w) * 2); max-width: 92vw; }
+    .wl-modal--wide .wl-modal-title { font-size: 14px; line-height: 1.3; text-align: center; }
     .tge-modal-body { overflow: auto; max-height: 78vh; }
     /* mobile: thu nhỏ font bảng trong popup để nội dung không lồng nhau */
     @media (max-width: 640px) {
@@ -884,13 +885,16 @@
       width: 100%; border-collapse: collapse;
       font-size: 13px; table-layout: fixed;
     }
-    /* Cột cố định: # | Project 26% | Raise 72 | VCs (auto, hút phần dư) | Available 188 | arrow 44
-       → Raise nằm sát Project, phần trống dồn vào cột VCs, không kéo ngang */
-    .wl-table th:nth-child(1), .wl-table td:nth-child(1) { width: 32px; }
-    .wl-table th:nth-child(2), .wl-table td:nth-child(2) { width: 26%; }
-    .wl-table th:nth-child(3), .wl-table td:nth-child(3) { width: 72px; }
-    .wl-table th:nth-child(5), .wl-table td:nth-child(5) { width: 132px; }
-    .wl-table th:nth-child(6), .wl-table td:nth-child(6) { width: 44px; }
+    /* Tỉ lệ cột desktop 1-6-3-3-3-1: # | Project | Raise | VCs | Available | arrow */
+    .wl-table th:nth-child(1), .wl-table td:nth-child(1) { width: 6%; }
+    .wl-table th:nth-child(2), .wl-table td:nth-child(2) { width: 35%; }
+    .wl-table th:nth-child(3), .wl-table td:nth-child(3) { width: 17%; }
+    .wl-table th:nth-child(4), .wl-table td:nth-child(4) { width: 18%; }
+    .wl-table th:nth-child(5), .wl-table td:nth-child(5) { width: 18%; }
+    .wl-table th:nth-child(6), .wl-table td:nth-child(6) { width: 6%; }
+    /* # và mũi tên (cột đầu/cuối) cách viền box rõ ràng, không sát mép */
+    .wl-table th:first-child, .wl-table td:first-child { padding-left: 16px; }
+    .wl-table th:last-child,  .wl-table td:last-child  { padding-right: 16px; text-align: center; }
     .wl-table thead th { padding: 8px 16px; vertical-align: middle; }
     .wl-table tbody td { padding: 12px 16px; vertical-align: middle; }
     .wl-table thead th {
@@ -931,15 +935,17 @@
     .wl-raise { font-weight: 700; color: var(--text); white-space: nowrap; }
     .wl-backers { font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     @media (max-width: 640px) {
-      /* mobile: ẩn VCs, Project hút phần dư, mọi cột vừa khít màn hình (không kéo ngang) */
-      .wl-table th:nth-child(1), .wl-table td:nth-child(1) { width: 24px; }
-      .wl-table th:nth-child(2), .wl-table td:nth-child(2) { width: auto; }
-      .wl-table th:nth-child(3), .wl-table td:nth-child(3) { width: 52px; }
+      /* mobile: ẩn VCs, tỉ lệ cột 1-6-3-3-1 (#/Project/Raise/Available/arrow) */
+      .wl-table th:nth-child(1), .wl-table td:nth-child(1) { width: 7%; }
+      .wl-table th:nth-child(2), .wl-table td:nth-child(2) { width: 43%; }
+      .wl-table th:nth-child(3), .wl-table td:nth-child(3) { width: 21%; }
       .wl-table th:nth-child(4), .wl-table td:nth-child(4) { display: none; }
-      .wl-table th:nth-child(5), .wl-table td:nth-child(5) { width: 96px; }
-      .wl-table th:nth-child(6), .wl-table td:nth-child(6) { width: 28px; }
+      .wl-table th:nth-child(5), .wl-table td:nth-child(5) { width: 22%; }
+      .wl-table th:nth-child(6), .wl-table td:nth-child(6) { width: 7%; }
       .wl-table thead th { padding: 8px 8px; }
       .wl-table tbody td { padding: 12px 8px; }
+      .wl-table th:first-child, .wl-table td:first-child { padding-left: 12px; }
+      .wl-table th:last-child,  .wl-table td:last-child  { padding-right: 12px; }
       .wl-chip { font-size: 10px; padding: 2px 4px; }
     }
 
@@ -1299,7 +1305,6 @@
                   <th>VCs</th>
                   <th>Available</th>
                   <th></th>
-                  <th id="wl-del-col" style="width:36px;display:none"></th>
                 </tr>
               </thead>
               <tbody id="wl-tbody"></tbody>
@@ -1573,7 +1578,6 @@
     const wlAddStatus  = document.getElementById('wl-add-status');
     const wlModalCancel = document.getElementById('wl-modal-cancel');
     const wlProgress   = document.getElementById('wl-progress');
-    const wlDelCol     = document.getElementById('wl-del-col');
     const wlTbody      = document.getElementById('wl-tbody');
 
     function wlLoadStorage() {
@@ -1650,18 +1654,15 @@
             ).join('')}
           </div>
         </td>
-        <td style="text-align:center">${arrowBtn}</td>
-        <td style="display:${wlAdmin ? '' : 'none'}">
-          <button class="wl-del-btn" data-uid="${uid}">✕</button>
-        </td>`;
+        <td style="text-align:center">${wlAdmin
+          ? `<button class="wl-del-btn" data-uid="${uid}" title="Xóa">✕</button>`
+          : arrowBtn}</td>`;
       return tr;
     }
 
     function wlRender() {
-      wlDelCol.style.display = wlAdmin ? '' : 'none';
-
       if (!wlProjects.length) {
-        wlTbody.innerHTML = '<tr><td colspan="7" class="wl-empty">No projects yet.</td></tr>';
+        wlTbody.innerHTML = '<tr><td colspan="6" class="wl-empty">No projects yet.</td></tr>';
         return;
       }
 
@@ -1670,7 +1671,7 @@
         .sort((a, b) => (b.raise_num || 0) - (a.raise_num || 0));
 
       if (!sorted.length) {
-        wlTbody.innerHTML = '<tr><td colspan="7" class="wl-empty">No Tier-1 backed projects.</td></tr>';
+        wlTbody.innerHTML = '<tr><td colspan="6" class="wl-empty">No Tier-1 backed projects.</td></tr>';
         return;
       }
 
