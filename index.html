@@ -1238,6 +1238,7 @@
             </span>
             <button class="wl-add-btn" id="wl-clean-btn" style="display:none" title="Remove TGE'd projects">🧹</button>
             <button class="wl-add-btn" id="wl-sync-btn" style="display:none" title="Sync from Surf API">↻</button>
+            <button class="wl-add-btn" id="wl-save-btn" style="display:none" title="Save to cloud">Save ↑</button>
             <button class="wl-add-btn" id="wl-add-btn" style="display:none" title="Add project">+</button>
             <button class="wl-admin-btn" id="wl-admin-btn">Admin</button>
           </div>
@@ -1446,6 +1447,7 @@
     const wlAdminBtn   = document.getElementById('wl-admin-btn');
     const wlCleanBtn   = document.getElementById('wl-clean-btn');
     const wlSyncBtn    = document.getElementById('wl-sync-btn');
+    const wlSaveBtn    = document.getElementById('wl-save-btn');
     const wlAddBtn     = document.getElementById('wl-add-btn');
     const wlGateInline = document.getElementById('wl-gate-inline');
     const wlPwInput    = document.getElementById('wl-pw');
@@ -1675,8 +1677,9 @@
         wlAdmin = true;
         wlHideGate();
         wlAdminBtn.textContent   = 'Logout';
-        wlCleanBtn.style.display = '';
+        wlCleanBtn.style.display = 'none';
         wlSyncBtn.style.display  = '';
+        wlSaveBtn.style.display  = '';
         wlAddBtn.style.display   = '';
         wlRender();
       } else {
@@ -1698,6 +1701,7 @@
         wlAdminBtn.textContent   = 'Admin';
         wlCleanBtn.style.display = 'none';
         wlSyncBtn.style.display  = 'none';
+        wlSaveBtn.style.display  = 'none';
         wlAddBtn.style.display   = 'none';
         wlAddForm.style.display = 'none';
         wlRender();
@@ -1838,6 +1842,24 @@
     }
 
     wlSyncBtn.addEventListener('click', wlSync);
+
+    wlSaveBtn.addEventListener('click', async () => {
+      wlSaveBtn.disabled = true;
+      wlProgress.textContent = 'Saving...';
+      try {
+        const r = await fetch('/api/watchlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'kv-save', data: wlProjects }),
+        });
+        const body = await r.json();
+        wlProgress.textContent = body.ok ? `✓ Saved ${wlProjects.length} projects` : '⚠ Save failed: ' + (body.error || r.status);
+      } catch (e) {
+        wlProgress.textContent = '⚠ Save failed: ' + e.message;
+      }
+      setTimeout(() => { wlProgress.textContent = ''; }, 4000);
+      wlSaveBtn.disabled = false;
+    });
 
     // ── Personal view — password gate ────────────────
     const PERSONAL_PASSWORD = 'hieu1403';
