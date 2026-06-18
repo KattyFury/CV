@@ -30,6 +30,7 @@
       --accent: #FFA111;
       --max:    900px;
       --box-h:  192px;   /* chiều cao cố định của box 4-quarter (Valuation) */
+      --modal-w: 340px;  /* popup nhỏ; popup lớn = 2× giá trị này */
     }
 
     html { scroll-behavior: smooth; overflow-y: scroll; }
@@ -312,8 +313,8 @@
     /* ── Bảng mở popup ───────────────────────────────── */
     .val-intro-clickable { cursor: pointer; }
     .val-intro-clickable:hover { color: var(--accent); }
-    /* 2 size popup chuẩn: nhỏ .wl-modal (340px, form) · lớn .wl-modal--wide (~2× cho nội dung nhiều) */
-    .wl-modal--wide { width: 700px; max-width: 92vw; }
+    /* 2 size popup chuẩn: nhỏ .wl-modal (--modal-w, form) · lớn = ĐÚNG 2× popup nhỏ (nội dung nhiều) */
+    .wl-modal--wide { width: calc(var(--modal-w) * 2); max-width: 92vw; }
     .tge-modal-body { overflow: auto; max-height: 78vh; }
 
     .val-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
@@ -832,7 +833,7 @@
     .wl-modal-backdrop.open { display: flex; }
     .wl-modal {
       background: #fff; border-radius: 14px;
-      padding: 24px 28px; width: 340px; max-width: 90vw;
+      padding: 24px 28px; width: var(--modal-w); max-width: 90vw;
       box-shadow: 0 8px 32px rgba(0,0,0,0.14);
       display: flex; flex-direction: column; gap: 12px;
     }
