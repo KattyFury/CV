@@ -1508,9 +1508,10 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'kv-save', data: wlProjects }),
       }).then(r => {
+        if (!document.getElementById('ard-wl-panel')?.classList.contains('active')) return;
         if (r.ok) { wlProgress.textContent = '✓ Saved'; setTimeout(() => { wlProgress.textContent = ''; }, 2000); }
-        else { wlProgress.textContent = '⚠ KV save failed'; setTimeout(() => { wlProgress.textContent = ''; }, 4000); }
-      }).catch(() => { wlProgress.textContent = '⚠ No cloud save'; setTimeout(() => { wlProgress.textContent = ''; }, 3000); });
+        else { r.json().then(b => { wlProgress.textContent = '⚠ ' + (b.error || 'Save failed'); setTimeout(() => { wlProgress.textContent = ''; }, 4000); }).catch(() => {}); }
+      }).catch(() => {});
     }
 
     function wlFmtRaise(num) {
