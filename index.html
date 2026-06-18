@@ -1606,7 +1606,7 @@
         const res  = await fetch('/watchlist-data.json?v=' + Date.now());
         const base = await res.json();
         wlProjects = base;
-        wlSaveStorage();
+        localStorage.setItem(WL_DATA_KEY, JSON.stringify(wlProjects));
         wlProgress.textContent = '';
         wlRender();
       } catch (e) {
