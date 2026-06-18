@@ -879,21 +879,24 @@
       border: 1px solid var(--border); border-radius: 14px;
       overflow: hidden; margin-bottom: 16px;
     }
-    .wl-table-scroll { overflow-x: auto; }
+    /* scroll nội bộ — thead sticky giữ nguyên, tbody cuộn */
+    .wl-table-scroll { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 180px); scrollbar-gutter: stable; }
 
     .wl-table {
       width: 100%; border-collapse: collapse;
       font-size: 13px; table-layout: fixed;
     }
-    /* Tỉ lệ cột desktop 1-6-3-3-3-1: # | Project | Raise | VCs | Available | arrow */
-    .wl-table th:nth-child(1), .wl-table td:nth-child(1) { width: 6%; }
-    .wl-table th:nth-child(2), .wl-table td:nth-child(2) { width: 35%; }
-    .wl-table th:nth-child(3), .wl-table td:nth-child(3) { width: 17%; }
-    .wl-table th:nth-child(4), .wl-table td:nth-child(4) { width: 18%; }
-    .wl-table th:nth-child(5), .wl-table td:nth-child(5) { width: 18%; }
-    .wl-table th:nth-child(6), .wl-table td:nth-child(6) { width: 6%; }
-    /* # và mũi tên (cột đầu/cuối) cách viền box rõ ràng, không sát mép */
+    /* Tỉ lệ cột desktop 4-2-4-2-1: Project | Raise | VCs | Available | arrow */
+    .wl-table th:nth-child(1), .wl-table td:nth-child(1) { width: 30.77%; }
+    .wl-table th:nth-child(2), .wl-table td:nth-child(2) { width: 15.38%; }
+    .wl-table th:nth-child(3), .wl-table td:nth-child(3) { width: 30.77%; }
+    .wl-table th:nth-child(4), .wl-table td:nth-child(4) { width: 15.38%; }
+    .wl-table th:nth-child(5), .wl-table td:nth-child(5) { width: 7.69%; }
     .wl-table th:first-child, .wl-table td:first-child { padding-left: 16px; }
+    /* PROJECT header lùi thêm logo(22px)+gap(8px) để align với text tên dự án */
+    .wl-table thead th:first-child { padding-left: 46px; }
+    /* AVAILABLE header lùi thêm chip padding-left(8px) để align với chip text */
+    .wl-table thead th:nth-child(4) { padding-left: 24px; }
     .wl-table th:last-child,  .wl-table td:last-child  { padding-right: 16px; text-align: center; }
     .wl-table thead th { padding: 8px 16px; vertical-align: middle; }
     .wl-table tbody td { padding: 12px 16px; vertical-align: middle; }
@@ -909,6 +912,7 @@
     .wl-table tbody td {
       color: var(--sub);
       border-bottom: 1px solid var(--border);
+      text-align: left;
     }
     .wl-table tbody tr:last-child td { border-bottom: none; }
     /* rank col compact */
@@ -933,21 +937,19 @@
     }
     .wl-proj-name { font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
     .wl-raise { font-weight: 700; color: var(--text); white-space: nowrap; }
-    .wl-backers { font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .wl-backers { font-size: 13px; color: var(--muted); line-height: 1.6; }
     @media (max-width: 640px) {
       /* mobile: bảng FIXED hẳn — không kéo ngang */
       .wl-table-scroll { overflow-x: hidden; }
-      /* ẩn VCs, tỉ lệ cột 1-6-3-3-1 (#/Project/Raise/Available/arrow) */
-      .wl-table th:nth-child(1), .wl-table td:nth-child(1) { width: 7%; }
-      .wl-table th:nth-child(2), .wl-table td:nth-child(2) { width: 43%; }
-      .wl-table th:nth-child(3), .wl-table td:nth-child(3) { width: 21%; }
-      .wl-table th:nth-child(4), .wl-table td:nth-child(4) { display: none; }
-      .wl-table th:nth-child(5), .wl-table td:nth-child(5) { width: 22%; }
-      .wl-table th:nth-child(6), .wl-table td:nth-child(6) { width: 7%; }
-      .wl-table thead th { padding: 8px 6px; }
-      .wl-table tbody td { padding: 12px 6px; }
-      /* cột # và mũi tên hẹp → padding nhỏ để content khỏi tràn */
-      .wl-table th:first-child, .wl-table td:first-child { padding-left: 8px; padding-right: 2px; }
+      /* ẩn VCs, tỉ lệ cột 4-2-2-1 (Project/Raise/Available/arrow) */
+      .wl-table th:nth-child(1), .wl-table td:nth-child(1) { width: 44.44%; }
+      .wl-table th:nth-child(2), .wl-table td:nth-child(2) { width: 22.22%; }
+      .wl-table th:nth-child(3), .wl-table td:nth-child(3) { display: none; }
+      .wl-table th:nth-child(4), .wl-table td:nth-child(4) { width: 22.22%; }
+      .wl-table th:nth-child(5), .wl-table td:nth-child(5) { width: 11.11%; }
+      .wl-table thead th { padding: 8px 6px; text-align: left; }
+      .wl-table tbody td { padding: 12px 6px; text-align: left; }
+      .wl-table th:first-child, .wl-table td:first-child { padding-left: 8px; }
       .wl-table th:last-child,  .wl-table td:last-child  { padding-right: 8px; padding-left: 2px; }
       .wl-chip { font-size: 10px; padding: 2px 4px; }
     }
@@ -970,7 +972,7 @@
     /* Others = dark when selected */
     .wl-chip[data-val="point"].on,
     .wl-chip[data-val="retroactive"].on,
-    .wl-chip[data-val="yap"].on {
+    .wl-chip[data-val="else"].on {
       background: var(--text); border-color: var(--text); color: #fff;
     }
     /* View mode: always show all 4, non-selected just dimmed */
@@ -1072,6 +1074,7 @@
       <nav>
         <button class="nav-btn active" id="nav-cv-btn">About me</button>
         <button class="nav-btn" id="nav-val-btn">Valuation</button>
+        <button class="nav-btn" id="nav-pretge-btn">Pre-TGE</button>
         <button class="nav-btn" id="nav-ard-btn">Airdrop</button>
       </nav>
     </div>
@@ -1268,69 +1271,60 @@
     </div>
   </div>
 
+  <!-- ── PRE-TGE VIEW ─────────────────────────────────── -->
+  <div id="pretge-view" style="display:none">
+    <div class="ard-wrap">
+      <div style="position:relative">
+        <div class="val-intro">Tracking pre-TGE opportunities</div>
+        <div id="wl-header-right" style="position:absolute;top:50%;right:0;transform:translateY(-50%);display:flex;align-items:center;gap:8px">
+          <span class="wl-progress-text" id="wl-progress"></span>
+          <span id="wl-gate-inline" style="display:none;align-items:center;gap:8px">
+            <input type="password" id="wl-pw" placeholder="Password"
+              style="font-family:'Roboto',sans-serif;font-size:13px;border:1px solid var(--border);
+                     border-radius:6px;padding:4px 12px;outline:none;width:130px;" />
+            <button id="wl-pw-submit" class="wl-gate-submit">Unlock</button>
+            <span id="wl-gate-error" class="wl-gate-error"></span>
+          </span>
+          <button class="wl-add-btn" id="wl-clean-btn" style="display:none" title="Remove TGE'd projects">🧹</button>
+          <button class="wl-add-btn" id="wl-sync-btn" style="display:none" title="Sync from Surf API">↻</button>
+          <button class="wl-add-btn" id="wl-save-btn" style="display:none" title="Save to cloud">↑</button>
+          <button class="wl-add-btn" id="wl-add-btn" style="display:none" title="Add project">+</button>
+          <button class="wl-admin-btn" id="wl-admin-btn">Admin</button>
+        </div>
+      </div>
+      <div class="wl-table-section">
+        <div class="wl-table-scroll">
+          <table class="wl-table">
+            <thead>
+              <tr>
+                <th>Project</th>
+                <th>Raise</th>
+                <th>VCs</th>
+                <th>Available</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="wl-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── AIRDROP VIEW ─────────────────────────────────── -->
   <div id="airdrop-view" style="display:none">
     <div class="ard-wrap">
-
-      <div class="ard-subtabs">
-        <button class="ard-subtab-btn active" id="ard-tab-wl-btn">Watchlist</button>
-        <button class="ard-subtab-btn" id="ard-tab-wte-btn">Work to Earn</button>
-      </div>
-
-      <!-- Watchlist panel -->
-      <div class="ard-tab-panel active" id="ard-wl-panel">
-        <div style="position:relative">
-          <div class="val-intro">Tracking pre-TGE opportunities</div>
-          <div id="wl-header-right" style="position:absolute;top:50%;right:0;transform:translateY(-50%);display:flex;align-items:center;gap:8px">
-            <span class="wl-progress-text" id="wl-progress"></span>
-            <span id="wl-gate-inline" style="display:none;align-items:center;gap:8px">
-              <input type="password" id="wl-pw" placeholder="Password"
-                style="font-family:'Roboto',sans-serif;font-size:13px;border:1px solid var(--border);
-                       border-radius:6px;padding:4px 12px;outline:none;width:130px;" />
-              <button id="wl-pw-submit" class="wl-gate-submit">Unlock</button>
-              <span id="wl-gate-error" class="wl-gate-error"></span>
-            </span>
-            <button class="wl-add-btn" id="wl-clean-btn" style="display:none" title="Remove TGE'd projects">🧹</button>
-            <button class="wl-add-btn" id="wl-sync-btn" style="display:none" title="Sync from Surf API">↻</button>
-            <button class="wl-add-btn" id="wl-save-btn" style="display:none" title="Save to cloud">↑</button>
-            <button class="wl-add-btn" id="wl-add-btn" style="display:none" title="Add project">+</button>
-            <button class="wl-admin-btn" id="wl-admin-btn">Admin</button>
-          </div>
-        </div>
-        <div class="wl-table-section">
-          <div class="wl-table-scroll">
-            <table class="wl-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Project</th>
-                  <th>Raise</th>
-                  <th>VCs</th>
-                  <th>Available</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="wl-tbody"></tbody>
-            </table>
+      <div style="position:relative">
+        <div class="val-intro">Active airdrop guides</div>
+        <span class="wte-count" id="wte-count" style="position:absolute;top:50%;left:0;transform:translateY(-50%)"></span>
+        <div style="position:absolute;top:50%;right:0;transform:translateY(-50%)">
+          <div class="lang-toggle">
+            <button class="lang-btn active" id="lang-vi-btn">VI</button>
+            <button class="lang-btn" id="lang-en-btn">EN</button>
           </div>
         </div>
       </div>
-
-      <!-- Work to Earn panel -->
-      <div class="ard-tab-panel" id="ard-wte-panel">
-        <div style="position:relative">
-          <div class="val-intro">Active airdrop guides</div>
-          <span class="wte-count" id="wte-count" style="position:absolute;top:50%;left:0;transform:translateY(-50%)"></span>
-          <div style="position:absolute;top:50%;right:0;transform:translateY(-50%)">
-            <div class="lang-toggle">
-              <button class="lang-btn active" id="lang-vi-btn">VI</button>
-              <button class="lang-btn" id="lang-en-btn">EN</button>
-            </div>
-          </div>
-        </div>
-        <div id="wte-cards" style="margin-top:4px"></div>
-      </div>
-
+      <div id="wte-cards" style="margin-top:4px"></div>
     </div>
   </div>
 
@@ -1457,11 +1451,13 @@
   <script>
     // ── View switching ────────────────────────────────
     const cvView    = document.getElementById('cv-view');
-    const valView   = document.getElementById('valuation-view');
-    const ardView   = document.getElementById('airdrop-view');
-    const navCvBtn  = document.getElementById('nav-cv-btn');
-    const navValBtn = document.getElementById('nav-val-btn');
-    const navArdBtn = document.getElementById('nav-ard-btn');
+    const valView    = document.getElementById('valuation-view');
+    const pretgeView = document.getElementById('pretge-view');
+    const ardView    = document.getElementById('airdrop-view');
+    const navCvBtn    = document.getElementById('nav-cv-btn');
+    const navValBtn   = document.getElementById('nav-val-btn');
+    const navPretgeBtn = document.getElementById('nav-pretge-btn');
+    const navArdBtn   = document.getElementById('nav-ard-btn');
 
     // ── TGE table popup ──────────────────────────────
     const tgeModal = document.getElementById('tge-modal');
@@ -1487,8 +1483,9 @@
     function hideAllViews() {
       cvView.style.display = 'none';
       valView.style.display = 'none';
+      pretgeView.style.display = 'none';
       ardView.style.display = 'none';
-      [navCvBtn, navValBtn, navArdBtn].forEach(b => b.classList.remove('active'));
+      [navCvBtn, navValBtn, navPretgeBtn, navArdBtn].forEach(b => b.classList.remove('active'));
     }
 
     function showCV(push = true) {
@@ -1506,44 +1503,35 @@
       if (push) history.pushState({}, '', '/valuation');
     }
 
+    function showPreTGE(push = true) {
+      hideAllViews();
+      pretgeView.style.display = 'block';
+      navPretgeBtn.classList.add('active');
+      if (push) history.pushState({}, '', '/pre-tge');
+      wlInit();
+    }
+
     function showAirdrop(push = true) {
       hideAllViews();
       ardView.style.display = 'block';
       navArdBtn.classList.add('active');
       if (push) history.pushState({}, '', '/airdrop');
-      wlInit();
+      renderWTE();
     }
 
     function routeFromPath() {
       const p = window.location.pathname;
       if (p === '/valuation') showValuation(false);
-      else if (p === '/airdrop' || p === '/watchlist') showAirdrop(false);
+      else if (p === '/pre-tge' || p === '/watchlist') showPreTGE(false);
+      else if (p === '/airdrop') showAirdrop(false);
       else showCV(false);
     }
 
-    navCvBtn.addEventListener('click',  () => showCV());
-    navValBtn.addEventListener('click', () => showValuation());
-    navArdBtn.addEventListener('click', () => showAirdrop());
+    navCvBtn.addEventListener('click',    () => showCV());
+    navValBtn.addEventListener('click',   () => showValuation());
+    navPretgeBtn.addEventListener('click',() => showPreTGE());
+    navArdBtn.addEventListener('click',   () => showAirdrop());
     window.addEventListener('popstate', routeFromPath);
-
-    // ── Airdrop sub-tabs ──────────────────────────────
-    function showArdSubTab(tab) {
-      const wlBtn  = document.getElementById('ard-tab-wl-btn');
-      const wteBtn = document.getElementById('ard-tab-wte-btn');
-      const wlPanel  = document.getElementById('ard-wl-panel');
-      const wtePanel = document.getElementById('ard-wte-panel');
-      if (tab === 'wte') {
-        wteBtn.classList.add('active');  wlBtn.classList.remove('active');
-        wtePanel.classList.add('active'); wlPanel.classList.remove('active');
-        renderWTE();
-      } else {
-        wlBtn.classList.add('active');   wteBtn.classList.remove('active');
-        wlPanel.classList.add('active'); wtePanel.classList.remove('active');
-        wlInit();
-      }
-    }
-    document.getElementById('ard-tab-wl-btn').addEventListener('click', () => showArdSubTab('wl'));
-    document.getElementById('ard-tab-wte-btn').addEventListener('click', () => showArdSubTab('wte'));
 
     // ── WATCHLIST ─────────────────────────────────────
     const WL_PW        = 'vi2702';
@@ -1605,7 +1593,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'kv-save', data: wlProjects }),
       }).then(r => {
-        if (!document.getElementById('ard-wl-panel')?.classList.contains('active')) return;
+        if (document.getElementById('pretge-view')?.style.display === 'none') return;
         if (r.ok) { wlProgress.textContent = '✓ Saved'; setTimeout(() => { wlProgress.textContent = ''; }, 2000); }
         else { r.json().then(b => { wlProgress.textContent = '⚠ ' + (b.error || 'Save failed'); setTimeout(() => { wlProgress.textContent = ''; }, 4000); }).catch(() => {}); }
       }).catch(() => {});
@@ -1640,19 +1628,18 @@
         ? `<a class="wl-proj-name" href="https://x.com/${p.x_handle}" target="_blank" rel="noopener" style="color:var(--text);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text)'">${p.name}</a>`
         : `<span class="wl-proj-name">${p.name}</span>`;
 
-      const bTop   = (p.backers || []).slice(0, 3).join(', ');
+      const bTop   = (p.backers || []).slice(0, 5).join('<br>');
       const hasGuide = wlHasGuide(p.name);
       const arrowBtn = `<button class="wl-arrow-btn ${hasGuide ? 'has-guide' : 'no-guide'}" data-name="${p.name}" title="${hasGuide ? 'View guide' : 'No guide yet'}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>`;
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td style="color:var(--muted);font-size:12px">${rank}</td>
         <td><div class="wl-proj-cell">${logo}${nameHtml}</div></td>
         <td class="wl-raise">${wlFmtRaise(p.raise_num)}</td>
         <td class="wl-backers">${bTop || '—'}</td>
         <td>
           <div class="wl-chips ${wlAdmin ? '' : 'view-mode'}" data-uid="${uid}">
-            ${['contribute','point','retroactive','yap'].map(v =>
+            ${['contribute','point','retroactive','else'].map(v =>
               `<span class="wl-chip ${sel.includes(v)?'on':''}" data-val="${v}">${v[0].toUpperCase()+v.slice(1)}</span>`
             ).join('')}
           </div>
@@ -1665,7 +1652,7 @@
 
     function wlRender() {
       if (!wlProjects.length) {
-        wlTbody.innerHTML = '<tr><td colspan="6" class="wl-empty">No projects yet.</td></tr>';
+        wlTbody.innerHTML = '<tr><td colspan="5" class="wl-empty">No projects yet.</td></tr>';
         return;
       }
 
@@ -1674,7 +1661,7 @@
         .sort((a, b) => (b.raise_num || 0) - (a.raise_num || 0));
 
       if (!sorted.length) {
-        wlTbody.innerHTML = '<tr><td colspan="6" class="wl-empty">No Tier-1 backed projects.</td></tr>';
+        wlTbody.innerHTML = '<tr><td colspan="5" class="wl-empty">No Tier-1 backed projects.</td></tr>';
         return;
       }
 
@@ -1704,7 +1691,7 @@
       wlTbody.querySelectorAll('.wl-arrow-btn').forEach(btn => {
         btn.addEventListener('click', e => {
           const name = e.currentTarget.dataset.name;
-          showArdSubTab('wte');
+          showAirdrop();
           setTimeout(() => {
             const slug = wlSlug(name);
             const el = document.getElementById('wte-card-' + slug);
@@ -2722,7 +2709,7 @@
         wteData.VI = parseWTE(text);
         wteLoaded.VI = true;
         // re-render watchlist nếu đang mở để cập nhật arrow màu
-        if (document.getElementById('ard-wl-panel')?.classList.contains('active')) wlRender();
+        if (document.getElementById('pretge-view')?.style.display !== 'none') wlRender();
       } catch (err) {
         console.warn('WTE fetch failed:', err);
         wteData.VI = [];
