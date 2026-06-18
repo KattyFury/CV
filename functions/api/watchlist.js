@@ -5,11 +5,15 @@ export async function onRequestGet(context) {
   const key    = context.env.SURF_API;
   const kv     = context.env.WATCHLIST;
 
-  // Load saved projects from KV
+  // Load saved projects + participation from KV
   if (action === 'kv-load') {
-    if (!kv) return Response.json({ data: [] });
-    const raw = await kv.get('projects');
-    return Response.json({ data: raw ? JSON.parse(raw) : [] });
+    if (!kv) return Response.json({ data: [], user: {} });
+    const raw  = await kv.get('projects');
+    const rawU = await kv.get('participation');
+    return Response.json({
+      data: raw  ? JSON.parse(raw)  : [],
+      user: rawU ? JSON.parse(rawU) : {},
+    });
   }
 
   if (!key) return Response.json({ error: 'SURF_API not configured' }, { status: 500 });
@@ -36,11 +40,12 @@ export async function onRequestPost(context) {
   const kv = context.env.WATCHLIST;
   if (!kv) return Response.json({ error: 'KV not configured' }, { status: 500 });
 
-  const { action, data } = await context.request.json();
+  const { action, data, user } = await context.request.json();
 
-  // Save projects to KV
+  // Save projects và/hoặc participation lên KV
   if (action === 'kv-save') {
-    await kv.put('projects', JSON.stringify(data));
+    if (data !== undefined) await kv.put('projects', JSON.stringify(data));
+    if (user !== undefined) await kv.put('participation', JSON.stringify(user));
     return Response.json({ ok: true });
   }
 

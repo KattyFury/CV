@@ -1666,7 +1666,8 @@
                 ? cur.filter(v => v !== val)
                 : [...cur, val];
               chip.classList.toggle('on');
-              wlSaveStorage();
+              // lưu local tức thì; bấm Save (↑) để đẩy lên KV
+              localStorage.setItem(WL_USER_KEY, JSON.stringify(wlUser));
             });
           });
         });
@@ -1725,10 +1726,12 @@
         const body = await r.json();
         if (body.data && body.data.length) {
           wlProjects = body.data;
-          // only load wlUser from localStorage — do NOT call wlLoadStorage() which overwrites wlProjects
-          try { wlUser = JSON.parse(localStorage.getItem(WL_USER_KEY) || '{}'); } catch { wlUser = {}; }
+          // participation: ưu tiên KV (cross-device), không có thì lấy localStorage
+          if (body.user && Object.keys(body.user).length) wlUser = body.user;
+          else { try { wlUser = JSON.parse(localStorage.getItem(WL_USER_KEY) || '{}'); } catch { wlUser = {}; } }
           Object.keys(wlUser).forEach(k => { const v = wlUser[k].participation; if (typeof v === 'string') wlUser[k].participation = v ? [v] : []; });
           localStorage.setItem(WL_DATA_KEY, JSON.stringify(wlProjects));
+          localStorage.setItem(WL_USER_KEY, JSON.stringify(wlUser));
           wlRender();
           return;
         }
@@ -1948,10 +1951,10 @@
         const r = await fetch('/api/watchlist', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'kv-save', data: wlProjects }),
+          body: JSON.stringify({ action: 'kv-save', data: wlProjects, user: wlUser }),
         });
         const body = await r.json();
-        wlProgress.textContent = body.ok ? `✓ Saved ${wlProjects.length} projects` : '⚠ Save failed: ' + (body.error || r.status);
+        wlProgress.textContent = body.ok ? `✓ Saved ${wlProjects.length} projects + chips` : '⚠ Save failed: ' + (body.error || r.status);
       } catch (e) {
         wlProgress.textContent = '⚠ Save failed: ' + e.message;
       }
