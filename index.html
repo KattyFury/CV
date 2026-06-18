@@ -500,6 +500,8 @@
       display: flex; gap: 8px;
       border-bottom: 1px solid var(--border);
       padding-top: 8px; margin-bottom: 0;
+      position: sticky; top: 56px;
+      background: #fff; z-index: 10;
     }
     .ard-subtab-btn {
       background: none; border: none; cursor: pointer;
@@ -853,7 +855,13 @@
     }
     .wl-proj-name { font-weight: 600; color: var(--text); }
     .wl-raise { font-weight: 700; color: var(--text); white-space: nowrap; }
-    .wl-backers { font-size: 13px; color: var(--muted); max-width: 200px; }
+    .wl-table th:nth-child(3), .wl-table td:nth-child(3) { width: 72px; }
+    .wl-backers { font-size: 13px; color: var(--muted); max-width: 160px; }
+    @media (max-width: 640px) {
+      .wl-table th:nth-child(4), .wl-table td:nth-child(4) { display: none; }
+      .wl-chip { font-size: 10px; padding: 2px 5px; }
+      .wl-table th:nth-child(5) { width: 120px; }
+    }
 
     .wl-chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
 
@@ -1621,7 +1629,9 @@
         const body = await r.json();
         if (body.data && body.data.length) {
           wlProjects = body.data;
-          wlLoadStorage(); // still load wlUser from localStorage
+          // only load wlUser from localStorage — do NOT call wlLoadStorage() which overwrites wlProjects
+          try { wlUser = JSON.parse(localStorage.getItem(WL_USER_KEY) || '{}'); } catch { wlUser = {}; }
+          Object.keys(wlUser).forEach(k => { const v = wlUser[k].participation; if (typeof v === 'string') wlUser[k].participation = v ? [v] : []; });
           localStorage.setItem(WL_DATA_KEY, JSON.stringify(wlProjects));
           wlRender();
           return;
