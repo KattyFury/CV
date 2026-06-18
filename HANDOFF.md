@@ -1,9 +1,27 @@
 # HANDOFF — CV / Portfolio (0xhieu.xyz)
 
-**Date:** 2026-06-17  
+**Date:** 2026-06-18  
 **Repo:** https://github.com/KattyFury/CV  
 **Live:** Cloudflare Pages (auto-deploy từ main branch)  
 **Local dev:** `npx wrangler pages dev . --port 8788` (cần Cloudflare Functions)
+
+---
+
+## Spacing System (2026-06-18) — QUY ĐỊNH BẮT BUỘC
+
+Toàn site dùng **grid 4px**. Mọi `margin / padding / gap` PHẢI là bội số của 4:
+`4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 56 · 64`
+
+Ngoại lệ duy nhất được phép:
+- `1px / 2px` — border, micro-gap
+- `7px 10px` — table cell padding (KHÓA, không đụng)
+- Cặp `padding: 2px 6px 2px 4px` + `margin: -2px -6px -2px -4px` — alignment bù trừ (kbd inline)
+
+Font-size khóa riêng (không đụng): `19/15/14/13/12/11/10px`.
+
+Scale documented trong `:root` comment đầu `<style>`. **Khi thêm element mới: chọn số trong scale, không tự chế số lẻ** (3/5/6/7/9/10/11/14/18/22 → đã loại sạch).
+
+Wrapper mọi tab đồng bộ: `max-width:900px; margin:0 auto; padding:0 24px 24px` (val/ard/wl). Header mỗi panel dùng cùng pattern `position:relative > .val-intro (giữa) + control absolute phải`, content cách header `margin-top:4px`.
 
 ---
 

@@ -12,6 +12,14 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ── SPACING SCALE (4px grid) ──────────────────────────────
+       Mọi margin / padding / gap PHẢI là bội số của 4:
+         4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 56 · 64
+       Ngoại lệ được phép:
+         1px / 2px  → border, micro-gap
+         7px 10px   → table cell padding (KHÓA — font scale CV)
+       Font-size khóa riêng: 19/15/14/13/12/11/10px (không đụng).
+       Khi thêm element mới: chọn spacing trong scale, không tự chế số lẻ. */
     :root {
       --white:  #ffffff;
       --off:    #f7f7f7;
@@ -120,7 +128,7 @@
       gap: 16px;
     }
 
-    .hero-top { display: flex; flex-direction: row; align-items: center; gap: 18px; }
+    .hero-top { display: flex; flex-direction: row; align-items: center; gap: 20px; }
 
     .pfp {
       width: 72px; height: 72px;
@@ -135,7 +143,7 @@
       color: #fff; font-size: 19px; font-weight: 700; letter-spacing: -0.02em;
     }
 
-    .hero-info { display: flex; flex-direction: column; gap: 3px; }
+    .hero-info { display: flex; flex-direction: column; gap: 4px; }
 
     .hero-handle {
       font-size: 19px; font-weight: 700;
@@ -158,7 +166,7 @@
     .socials { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 8px; }
 
     .social-btn {
-      display: inline-flex; align-items: center; gap: 7px;
+      display: inline-flex; align-items: center; gap: 8px;
       padding: 8px 16px; border-radius: 999px;
       border: 1px solid var(--border);
       font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 400;
@@ -194,12 +202,12 @@
     .tl-bullets { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; list-style: none; }
     .tl-bullets li {
       font-size: 15px; font-weight: 400; color: var(--sub);
-      padding-left: 14px; position: relative; line-height: 1.6;
+      padding-left: 16px; position: relative; line-height: 1.6;
     }
     .tl-bullets li::before { content: '–'; position: absolute; left: 0; color: var(--muted); }
 
     /* ── HIGHLIGHTS ───────────────────────────────── */
-    #highlights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    #highlights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
     @media (max-width: 480px) { #highlights-grid { grid-template-columns: 1fr; } }
 
@@ -224,11 +232,11 @@
       opacity: 0.7; transition: opacity 0.15s;
     }
     #lightbox-close:hover { opacity: 1; }
-    .hl-caption { padding: 10px 14px 12px; font-size: 15px; font-weight: 400; color: var(--sub); line-height: 1.5; }
+    .hl-caption { padding: 12px 16px 12px; font-size: 15px; font-weight: 400; color: var(--sub); line-height: 1.5; }
     .hl-empty { grid-column: 1/-1; text-align: center; padding: 48px 0; font-size: 15px; color: var(--muted); }
 
     /* ── AVAILABLE FOR ────────────────────────────── */
-    .avail-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .avail-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
     .avail-list li {
       font-size: 15px; font-weight: 400; color: var(--sub);
       padding-left: 16px; position: relative; line-height: 1.6;
@@ -254,7 +262,7 @@
 
     .val-intro {
       text-align: center;
-      padding: 18px 0 14px;
+      padding: 20px 0 16px;
       font-size: 15px;
       font-weight: 500;
       color: var(--text);
@@ -281,7 +289,7 @@
     .val-panel-head-left {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .val-panel-head span {
@@ -303,7 +311,7 @@
     .val-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
 
     .val-table thead th {
-      padding: 9px 14px;
+      padding: 8px 16px;
       text-align: left;
       font-size: 12px; font-weight: 600;
       color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase;
@@ -314,7 +322,7 @@
     .val-table tbody tr:hover { background: var(--off); }
 
     .val-table tbody td {
-      padding: 10px 14px;
+      padding: 12px 16px;
       color: var(--sub);
       border-bottom: 1px solid var(--border);
       vertical-align: middle; white-space: nowrap;
@@ -323,7 +331,7 @@
     .val-table tbody tr:last-child td { border-bottom: none; }
     .val-table th, .val-table td { width: 20%; }
     .td-ticker { font-weight: 600; color: var(--sub) !important; font-size: 13px; }
-    .td-size   { font-size: 11px; opacity: 0.6; font-weight: 400; margin-left: 3px; }
+    .td-size   { font-size: 11px; opacity: 0.6; font-weight: 400; margin-left: 4px; }
     .td-multi  { font-weight: 700; color: var(--text) !important; }
     .td-source { font-size: 12px; color: var(--muted) !important; }
 
@@ -344,7 +352,7 @@
     .val-card {
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 10px 12px;
+      padding: 12px 12px;
       background: var(--off);
     }
 
@@ -362,11 +370,11 @@
     /* ── DANGER ZONE ────────────────────────────────── */
     .danger-sub {
       font-size: 11px; font-weight: 400; color: var(--muted);
-      margin-left: 6px; letter-spacing: 0;
+      margin-left: 8px; letter-spacing: 0;
     }
     .danger-row {
       display: flex; align-items: center; gap: 8px;
-      padding: 5px 8px; border-radius: 6px;
+      padding: 4px 8px; border-radius: 6px;
       background: rgba(255,90,54,0.08);
       margin-bottom: 4px;
     }
@@ -375,7 +383,7 @@
     .danger-badge-new {
       font-size: 9px; font-weight: 800; letter-spacing: 0.05em;
       color: #fff; background: #FF5A36;
-      padding: 1px 5px; border-radius: 4px;
+      padding: 1px 4px; border-radius: 4px;
     }
     .danger-multi { font-size: 13px; font-weight: 700; color: #FF5A36; }
     .danger-date  { font-size: 11px; color: var(--muted); width: 60px; text-align: right; }
@@ -385,17 +393,17 @@
       font-size: 19px; font-weight: 700;
       letter-spacing: -0.04em; color: var(--text); line-height: 1.2;
     }
-    .baseline-sub { font-size: 13px; color: var(--muted); margin-top: 5px; }
+    .baseline-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
 
     /* Cả 3 card cùng hệ flex column — margin không bị gộp, 3 vùng thẳng hàng:
        Tiêu đề (label) → Box nội dung (split-box / inputs) → Chốt (levels / nút Calculate) */
     .val-analysis > .val-card { display: flex; flex-direction: column; }
-    #calc-form { display: flex; flex-direction: column; flex: 1; margin-top: 6px; }
+    #calc-form { display: flex; flex-direction: column; flex: 1; margin-top: 8px; }
     .market-levels {
       display: flex; gap: 4px; margin-top: auto; padding-top: 12px;
     }
     .mkt-lvl {
-      flex: 1; text-align: center; padding: 7px 2px;
+      flex: 1; text-align: center; padding: 8px 2px;
       border-radius: 8px; font-size: 12px; font-weight: 500;
       color: var(--muted); opacity: 0.28;
       letter-spacing: 0.02em; line-height: 1.2;
@@ -411,12 +419,12 @@
 
     .split-box {
       display: flex; align-items: stretch;
-      margin-top: 6px; border: 1px solid var(--border);
+      margin-top: 8px; border: 1px solid var(--border);
       border-radius: 8px; overflow: hidden;
       background: var(--white);
     }
     .split-col {
-      flex: 1; padding: 6px 8px;
+      flex: 1; padding: 8px 8px;
       display: flex; flex-direction: column; gap: 2px;
     }
     .split-divider { width: 1px; background: var(--border); flex-shrink: 0; }
@@ -432,14 +440,14 @@
     .split-lbl span { font-weight: 400; text-transform: none; letter-spacing: 0; }
 
     /* Calculator */
-    .calc-fields { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+    .calc-fields { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
     .calc-field { display: flex; flex-direction: column; gap: 2px; }
     .calc-field label {
       font-size: 11px; font-weight: 600; letter-spacing: 0.05em;
       text-transform: uppercase; color: var(--muted);
     }
     .calc-field input {
-      padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px;
+      padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;
       font-family: 'Roboto', sans-serif; font-size: 13px; color: var(--text);
       background: white; outline: none; transition: border-color 0.15s;
       width: 100%; min-width: 0; box-sizing: border-box;
@@ -451,7 +459,7 @@
 
     /* Cùng kích cỡ với nút level (.mkt-lvl), nằm 1/2 width cạnh Total Supply */
     .calc-btn {
-      width: 100%; min-width: 0; padding: 7px 2px;
+      width: 100%; min-width: 0; padding: 8px 2px;
       background: var(--accent);
       color: #1a1a1a; border: none; border-radius: 8px;
       font-family: 'Roboto', sans-serif; font-size: 12px; font-weight: 700;
@@ -467,11 +475,11 @@
     .calc-btn-field .calc-btn { width: 100%; }
     #calc-result {
       position: relative;
-      margin-top: 6px;
+      margin-top: 8px;
       background: linear-gradient(135deg, rgba(255,161,17,0.12), rgba(255,161,17,0.02));
       border: 1px solid rgba(255,161,17,0.25);
       border-radius: 8px;
-      padding: 10px;
+      padding: 12px;
       box-sizing: border-box;
     }
     #calc-res-sub {
@@ -507,7 +515,7 @@
       background: none; border: none; cursor: pointer;
       font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 500;
       letter-spacing: -0.01em;
-      color: var(--muted); padding: 10px 4px; margin-bottom: -1px;
+      color: var(--muted); padding: 12px 4px; margin-bottom: -1px;
       border-bottom: 2px solid transparent;
       transition: color 0.15s, border-color 0.15s;
     }
@@ -517,24 +525,20 @@
     .ard-tab-panel.active { display: block; }
 
     /* Toolbar */
-    .wte-toolbar {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      padding-top: 18px;
-      margin-bottom: 20px;
-    }
     .wte-count { font-size: 13px; color: var(--muted); }
 
     /* Language toggle */
     .lang-toggle {
       display: flex; border: 1px solid var(--border);
       border-radius: 6px; overflow: hidden;
+      height: 30px; box-sizing: border-box;
     }
     .lang-btn {
       background: none; border: none; cursor: pointer;
       font-family: 'Roboto', sans-serif; font-size: 13px;
       font-weight: 500;
-      color: var(--sub); padding: 5px 12px;
+      color: var(--sub); padding: 0 12px;
+      display: inline-flex; align-items: center; justify-content: center;
       transition: background 0.15s, color 0.15s;
     }
     .lang-btn.active { background: var(--accent); color: #1a1a1a; }
@@ -575,8 +579,8 @@
 
     /* Card header */
     .wte-card-head {
-      display: flex; align-items: center; gap: 10px;
-      padding: 14px 18px 12px;
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px 12px;
     }
     .wte-logo {
       width: 22px; height: 22px; border-radius: 50%;
@@ -584,7 +588,7 @@
       background: var(--border);
     }
     .wte-card-meta {
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: center; gap: 8px;
       margin-left: auto; flex-shrink: 0;
     }
     .wte-rank {
@@ -635,7 +639,7 @@
     /* Sections */
     .wte-section {
       border-top: 1px solid var(--border);
-      padding: 10px 18px 12px;
+      padding: 12px 20px 12px;
     }
     .wte-section-label {
       font-size: 11px; font-weight: 700;
@@ -645,7 +649,7 @@
     /* Daily section — highlighted, color follows rank */
     .wte-section--daily {
       border-left: 3px solid currentColor;
-      padding-left: 15px;
+      padding-left: 16px;
     }
     .wte-section--daily .wte-section-label { font-weight: 800; }
     .wte-section--daily .wte-task-text { color: var(--text); font-weight: 500; }
@@ -660,7 +664,7 @@
     .wte-card--B .wte-section--daily .wte-section-label { color: #c8a000; }
     .wte-tasks {
       list-style: none; margin: 0; padding: 0;
-      display: flex; flex-direction: column; gap: 5px;
+      display: flex; flex-direction: column; gap: 4px;
     }
     .wte-task-item {
       display: flex; align-items: flex-start; gap: 8px;
@@ -693,14 +697,14 @@
     .pf-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
     .pf-table td, .pf-table th { overflow: hidden; text-overflow: ellipsis; }
     .pf-table thead th {
-      padding: 9px 14px; text-align: left;
+      padding: 8px 16px; text-align: left;
       font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
       text-transform: uppercase; color: var(--muted);
       background: white; position: sticky; top: 0; z-index: 2;
       border-bottom: 1px solid var(--border); white-space: nowrap;
     }
     .pf-table tbody td {
-      padding: 9px 14px; color: var(--sub);
+      padding: 8px 16px; color: var(--sub);
       border-bottom: 1px solid var(--border); vertical-align: top;
     }
     .pf-table tbody tr:last-child td { border-bottom: none; }
@@ -741,7 +745,7 @@
     }
 
     .wl-header-right {
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; gap: 12px;
     }
 
     .wl-progress-text {
@@ -754,15 +758,16 @@
       border: 1px solid var(--border);
       border-radius: 6px; background: var(--white);
       color: var(--sub); cursor: pointer;
-      padding: 4px 10px;
+      height: 30px; padding: 0 12px;
+      display: inline-flex; align-items: center; justify-content: center;
+      box-sizing: border-box;
       transition: border-color 0.15s, color 0.15s;
     }
     .wl-admin-btn:hover, .wl-add-btn:hover {
       border-color: var(--accent); color: var(--text);
     }
     .wl-add-btn {
-      font-size: 16px; padding: 4px 10px; line-height: 1;
-      color: var(--sub); border-color: var(--border);
+      font-size: 16px; padding: 0 12px; line-height: 1;
     }
 
     .wl-gate {
@@ -772,7 +777,7 @@
     .wl-gate input {
       font-family: 'Roboto', sans-serif; font-size: 15px;
       border: 1px solid var(--border); border-radius: 6px;
-      padding: 6px 12px; outline: none; width: 180px;
+      padding: 8px 12px; outline: none; width: 180px;
       transition: border-color 0.15s;
     }
     .wl-gate input:focus { border-color: var(--accent); }
@@ -780,7 +785,7 @@
       font-family: 'Roboto', sans-serif; font-size: 13px;
       font-weight: 500; border: 1px solid var(--border);
       border-radius: 6px; background: var(--white);
-      color: var(--sub); cursor: pointer; padding: 6px 14px;
+      color: var(--sub); cursor: pointer; padding: 8px 16px;
     }
     .wl-gate-submit:hover { border-color: var(--accent); color: var(--text); }
     .wl-gate-error { font-size: 13px; color: #e0453a; }
@@ -810,7 +815,7 @@
       font-family: 'Roboto', sans-serif; font-size: 13px;
       font-weight: 500; border: none; border-radius: 8px;
       background: var(--accent); color: #fff;
-      cursor: pointer; padding: 8px 18px;
+      cursor: pointer; padding: 8px 20px;
     }
     .wl-add-submit:disabled { opacity: 0.5; cursor: default; }
     .wl-modal-cancel {
@@ -822,7 +827,7 @@
 
     .wl-table-section {
       border: 1px solid var(--border); border-radius: 14px;
-      overflow: hidden; margin-top: 5px;
+      overflow: hidden; margin-top: 4px;
     }
     .wl-table-scroll { overflow-x: auto; }
 
@@ -851,7 +856,7 @@
     .wl-table tbody tr:last-child td { border-bottom: none; }
     /* rank col compact */
     .wl-table th:first-child,
-    .wl-table td:first-child { padding-right: 6px; }
+    .wl-table td:first-child { padding-right: 8px; }
 
     .wl-proj-cell {
       display: flex; align-items: center; gap: 8px;
@@ -875,7 +880,7 @@
     .wl-backers { font-size: 13px; color: var(--muted); max-width: 160px; }
     @media (max-width: 640px) {
       .wl-table th:nth-child(4), .wl-table td:nth-child(4) { display: none; }
-      .wl-chip { font-size: 10px; padding: 2px 5px; }
+      .wl-chip { font-size: 10px; padding: 2px 4px; }
       .wl-table th:nth-child(5) { width: 120px; }
     }
 
@@ -884,7 +889,7 @@
     .wl-chip {
       font-family: 'Roboto', sans-serif; font-size: 12px; font-weight: 500;
       border: 1px solid var(--border); border-radius: 999px;
-      padding: 2px 9px; cursor: pointer; transition: all 0.15s;
+      padding: 2px 8px; cursor: pointer; transition: all 0.15s;
       background: var(--white); color: var(--muted);
       user-select: none; white-space: nowrap;
     }
@@ -921,7 +926,7 @@
 
     .wl-del-btn {
       background: none; border: none; cursor: pointer;
-      color: var(--muted); font-size: 15px; padding: 2px 6px;
+      color: var(--muted); font-size: 15px; padding: 2px 8px;
       border-radius: 4px; transition: color 0.15s;
     }
     .wl-del-btn:hover { color: #e0453a; }
@@ -939,21 +944,21 @@
 
     .personal-lock {
       display: flex; flex-direction: column; align-items: center;
-      justify-content: center; gap: 14px;
+      justify-content: center; gap: 16px;
       padding: 100px 20px; text-align: center;
     }
     .personal-lock-icon { color: var(--muted); }
     .personal-lock-icon svg { width: 28px; height: 28px; }
     .personal-lock input {
       font-family: 'Roboto', sans-serif; font-size: 15px;
-      padding: 9px 12px; border: 1px solid var(--border);
+      padding: 8px 12px; border: 1px solid var(--border);
       border-radius: 8px; outline: none; width: 220px;
       text-align: center;
     }
     .personal-lock input:focus { border-color: var(--accent); }
     .personal-lock-btn {
       font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 600;
-      padding: 9px 20px; border: none; border-radius: 8px;
+      padding: 8px 20px; border: none; border-radius: 8px;
       background: var(--accent); color: #1a1a1a; cursor: pointer;
     }
     .personal-lock-error { font-size: 13px; color: #e0453a; min-height: 16px; }
@@ -965,7 +970,7 @@
     .personal-tab-btn {
       background: none; border: none; cursor: pointer;
       font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 500;
-      color: var(--muted); padding: 10px 4px; margin-bottom: -1px;
+      color: var(--muted); padding: 12px 4px; margin-bottom: -1px;
       border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s;
     }
     .personal-tab-btn:hover { color: var(--text); }
@@ -1245,10 +1250,10 @@
           <div class="val-intro">Tracking pre-TGE opportunities</div>
           <div id="wl-header-right" style="position:absolute;top:50%;right:0;transform:translateY(-50%);display:flex;align-items:center;gap:8px">
             <span class="wl-progress-text" id="wl-progress"></span>
-            <span id="wl-gate-inline" style="display:none;align-items:center;gap:6px">
+            <span id="wl-gate-inline" style="display:none;align-items:center;gap:8px">
               <input type="password" id="wl-pw" placeholder="Password"
                 style="font-family:'Roboto',sans-serif;font-size:13px;border:1px solid var(--border);
-                       border-radius:6px;padding:4px 10px;outline:none;width:130px;" />
+                       border-radius:6px;padding:4px 12px;outline:none;width:130px;" />
               <button id="wl-pw-submit" class="wl-gate-submit">Unlock</button>
               <span id="wl-gate-error" class="wl-gate-error"></span>
             </span>
@@ -1281,14 +1286,17 @@
 
       <!-- Work to Earn panel -->
       <div class="ard-tab-panel" id="ard-wte-panel">
-        <div class="wte-toolbar">
-          <span class="wte-count" id="wte-count"></span>
-          <div class="lang-toggle">
-            <button class="lang-btn active" id="lang-vi-btn">VI</button>
-            <button class="lang-btn" id="lang-en-btn">EN</button>
+        <div style="position:relative">
+          <div class="val-intro">Active airdrop guides</div>
+          <div style="position:absolute;top:50%;right:0;transform:translateY(-50%);display:flex;align-items:center;gap:8px">
+            <span class="wte-count" id="wte-count"></span>
+            <div class="lang-toggle">
+              <button class="lang-btn active" id="lang-vi-btn">VI</button>
+              <button class="lang-btn" id="lang-en-btn">EN</button>
+            </div>
           </div>
         </div>
-        <div id="wte-cards"></div>
+        <div id="wte-cards" style="margin-top:4px"></div>
       </div>
 
     </div>
