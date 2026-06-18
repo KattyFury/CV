@@ -29,6 +29,7 @@
       --text:   #1a1a1a;
       --accent: #FFA111;
       --max:    900px;
+      --box-h:  192px;   /* chiều cao cố định của box 4-quarter (Valuation) */
     }
 
     html { scroll-behavior: smooth; overflow-y: scroll; }
@@ -348,6 +349,21 @@
     @media (max-width: 640px) {
       .val-analysis { grid-template-columns: 1fr; }
     }
+
+    /* ── BOX 4-QUARTER GRID (Market / Recent / Predict / Danger) ──
+       Mọi box cùng 1 chiều cao cố định, chia 4 phần đều theo dọc:
+         q1 = tiêu đề (1/4) · q2-3 = nội dung (2/4) · q4 = kết luận (1/4)
+       Box không có kết luận: nội dung chiếm q2-3-4 (3/4). */
+    .val-analysis.val-boxes > .val-card {
+      height: var(--box-h); min-height: var(--box-h);
+      display: grid; grid-template-rows: repeat(4, 1fr);
+    }
+    .vc-q1   { grid-row: 1 / 2; }   /* tiêu đề */
+    .vc-q23  { grid-row: 2 / 4; min-height: 0; }   /* nội dung khi có kết luận */
+    .vc-q234 { grid-row: 2 / 5; min-height: 0; }   /* nội dung khi không kết luận */
+    .vc-q4   { grid-row: 4 / 5; }   /* kết luận */
+    .val-boxes > .val-card > .vc-q234,
+    .val-boxes > .val-card > .vc-q23 { overflow: auto; }
 
     .val-card {
       border: 1px solid var(--border);
@@ -1151,12 +1167,12 @@
       </div>
 
       <!-- BOTTOM: Analysis cards — Market condition | Recent TGE multiples | Predict TGE FDV -->
-      <div class="val-analysis">
+      <div class="val-analysis val-boxes" id="val-row1">
 
         <!-- 1. Market condition -->
         <div class="val-card" id="market-card">
-          <div class="val-card-label calc-card-label">Market condition</div>
-          <div class="split-box" id="market-terms">
+          <div class="val-card-label calc-card-label vc-q1">Market condition</div>
+          <div class="split-box vc-q23" id="market-terms">
             <div class="split-col">
               <div class="split-val" id="market-short-val">—</div>
               <div class="split-lbl">Short-term<br><span id="market-short-n"></span></div>
@@ -1167,7 +1183,7 @@
               <div class="split-lbl">Mid-term<br><span id="market-mid-n"></span></div>
             </div>
           </div>
-          <div class="market-levels" id="market-levels">
+          <div class="market-levels vc-q4" id="market-levels">
             <div class="mkt-lvl" data-lvl="0">Strong</div>
             <div class="mkt-lvl" data-lvl="1">Normal</div>
             <div class="mkt-lvl" data-lvl="2">Weak</div>
@@ -1176,8 +1192,8 @@
 
         <!-- 2. Recent TGE multiples — split Low / High FDV -->
         <div class="val-card">
-          <div class="val-card-label calc-card-label">Recent TGE multiples</div>
-          <div class="split-box">
+          <div class="val-card-label calc-card-label vc-q1">Recent TGE multiples</div>
+          <div class="split-box vc-q234">
             <div class="split-col">
               <div class="split-val" id="baseline-low">—</div>
               <div class="split-lbl">Low FDV<br><span>Median</span></div>
@@ -1192,8 +1208,8 @@
 
         <!-- 3. Predict TGE FDV -->
         <div class="val-card" id="calc-card">
-          <div class="val-card-label calc-card-label">Predict TGE FDV</div>
-          <div id="calc-form">
+          <div class="val-card-label calc-card-label vc-q1">Predict TGE FDV</div>
+          <div id="calc-form" class="vc-q234">
             <div class="calc-row-2" style="margin-bottom:8px">
               <div class="calc-field">
                 <label>Fundraising ($M)</label>
@@ -1214,7 +1230,7 @@
               </div>
             </div>
           </div>
-          <div id="calc-result" style="display:none">
+          <div id="calc-result" class="vc-q234" style="display:none">
             <div id="calc-res-sub"></div>
             <button class="calc-reset-btn" id="calc-reset-btn" title="New calculation">✕</button>
           </div>
@@ -1223,12 +1239,12 @@
       </div>
 
       <!-- ROW 2: Advanced boxes — Danger Zone -->
-      <div class="val-analysis" style="margin-top:8px">
+      <div class="val-analysis val-boxes" style="margin-top:8px">
 
         <!-- 4. Danger Zone -->
         <div class="val-card" id="danger-card">
-          <div class="val-card-label calc-card-label">🔴 Danger Zone <span class="danger-sub">×ATM ≥ 15</span></div>
-          <div id="danger-list"></div>
+          <div class="val-card-label calc-card-label vc-q1">🔴 Danger Zone <span class="danger-sub">×ATM ≥ 15</span></div>
+          <div id="danger-list" class="vc-q234"></div>
         </div>
 
       </div>
