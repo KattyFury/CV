@@ -1793,10 +1793,7 @@
 
         // — Phase 2: thêm project mới có Tier-1 (raise ≥ $5M mới check — dưới đó Tier-1 không invest)
         const shownNames = new Set(wlProjects.filter(p => wlHasTier1(p.backers)).map(p => p.name.toLowerCase()));
-        const newItems   = apiList.filter(p =>
-          !shownNames.has((p.project_name || '').toLowerCase()) &&
-          (!p.total_raise || p.total_raise >= 5_000_000)
-        );
+        const newItems = apiList.filter(p => !shownNames.has((p.project_name || '').toLowerCase()));
 
         let added = 0;
         for (let i = 0; i < newItems.length; i++) {
