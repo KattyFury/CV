@@ -168,11 +168,19 @@ Cột J (beforeATH) **bỏ trống** — đã thử CoinGecko (401), Binance (45
 
 | Source | Mục đích |
 |---|---|
-| `watchlist-data.json` | 42 project tĩnh import từ CSV (Desktop) |
+| **Cloudflare KV** (binding `WATCHLIST`, key `projects`) | **Source of truth — cross-device.** Load đầu tiên khi mở tab |
+| `watchlist-data.json` | 42 project tĩnh import từ CSV (Desktop) — chỉ fallback khi KV rỗng |
 | `vc-tier1.json` | 33 Tier-1 VC/angel — filter tiêu chuẩn |
-| `functions/api/watchlist.js` | Proxy Surf AI API (giữ `SURF_API` key an toàn) |
+| `functions/api/watchlist.js` | Proxy Surf AI API + KV load/save (giữ `SURF_API` key an toàn) |
 | `localStorage wl_projects_v2` | Cache project data trên browser |
 | `localStorage wl_user_v2` | Participation chips per project |
+
+### KV persistence (cross-device) — 2026-06-18
+
+- **Binding name: `WATCHLIST`** (set trong Cloudflare Pages Dashboard → Settings → Functions → KV bindings). Code đọc `context.env.WATCHLIST`. **Tên này PHẢI khớp Dashboard** — đừng tự đổi.
+- `wlInit()` load thứ tự: KV (`?action=kv-load`) → localStorage → static JSON. KV có data thì dùng luôn, KHÔNG để wlLoadStorage() ghi đè.
+- `wlInitialFetch()` (static JSON fallback) chỉ ghi localStorage, **KHÔNG push lên KV** — tránh đè data đã sync bằng 37 project tĩnh.
+- Mọi save (sync/add/delete) → `wlSaveStorage()` → ghi localStorage + POST `kv-save`. Nút `↑` Save thủ công cũng gọi cùng endpoint.
 
 ### Surf AI API
 
@@ -191,10 +199,20 @@ Chỉ hiện project có ít nhất 1 backer trong `vc-tier1.json`. Matching dù
 
 Password: `vi2702` (client-side only, không phải bảo mật thật).
 
-Unlock → 3 nút xuất hiện:
-- **🧹 Clean** — gọi `project/detail` cho từng project, xóa nếu `tge_status === 'post'`
-- **↻ Sync** — fetch 100 từ Surf API, check Tier-1 + pre-TGE, thêm project mới
-- **+ Add** — thêm thủ công 1 project theo tên
+Unlock → 3 nút xuất hiện (cùng size/style, icon đồng bộ):
+- **↻ Sync** — gộp 2 phase trong 1 lần chạy:
+  - Phase 1 (clean): project không còn trong active list → check `detail`, xóa nếu `tge_status === 'post'`. **Cap tối đa 10 detail call/sync** để tiết kiệm credit.
+  - Phase 2 (thêm mới): fetch 100 từ Surf API, check Tier-1 + pre-TGE, thêm project mới. **KHÔNG filter theo raise** (Tier-1 invest seed nhỏ $3-4M bình thường).
+- **↑ Save** — push toàn bộ `wlProjects` lên KV thủ công, báo `✓ Saved N projects` hoặc lỗi cụ thể.
+- **+ Add** — mở **modal popup** (overlay giữa màn hình), thêm thủ công theo tên. Đóng bằng Cancel / click backdrop / Escape.
+
+> Nút 🧹 Clean cũ đã bỏ — logic clean gộp vào Sync (2026-06-18).
+
+### Layout notes (2026-06-18)
+- Sub-tab bar (`.ard-subtabs`) `position:sticky; top:56px` — không mất khi scroll.
+- Raise column width cố định `72px` — tránh spacing thừa giữa Project và Raise.
+- Mobile ≤640px: ẩn cột VCs, chip nhỏ hơn.
+- **Modal HTML phải nằm TRƯỚC `<script>` tag** — script chạy inline (không có DOMContentLoaded), đặt sau → `getElementById` null → crash toàn bộ JS → mất hết data hiển thị.
 
 ### Scripts
 
@@ -348,6 +366,8 @@ git add index.html && git commit -m "..." && git push
 
 - 2026-06-17: Sync button check `shownNames` (Tier-1 filtered) thay vì toàn bộ `wlProjects` — reason: localStorage có thể chứa project không pass Tier-1 từ sync cũ, gây "already up to date" sai.
 
+- 2026-06-18: **KV cross-device hoạt động** sau khi sửa binding name về `WATCHLIST` (khớp Dashboard). Root cause của "máy khác trống trơn": (1) binding name trong code có lúc bị đổi nhầm sang `KV_BINDING` → KV undefined → trả `[]`; (2) `wlInitialFetch()` static JSON push 37 project tĩnh đè data KV; (3) `wlInit()` KV-path gọi `wlLoadStorage()` ghi đè wlProjects bằng localStorage rỗng. Đã fix cả 3.
+- 2026-06-18: Sync gộp luôn clean TGE (bỏ nút 🧹) — Phase 1 clean (cap 10 call), Phase 2 add. Bỏ filter raise≥5M (sai — Tier-1 invest seed nhỏ). Add chuyển sang modal popup. 3 nút admin đồng bộ icon `↻ ↑ +`. Sub-tab sticky, raise width 72px, mobile ẩn cột VCs.
 - 2026-06-17: Watchlist layout fixes — `wl-wrap` padding đồng bộ với `val-wrap` (`0 24px 24px`), admin button dùng `position:absolute` góc phải của headline row, thead dùng `background:white; position:sticky` giống Valuation, thêm `margin-top:5px` cho `.wl-table-section`.
 
 - 2026-06-16: Thêm rank tier **SS** (★★★★, purple #8B5CF6) vào WTE cards — nằm trên S, sort đầu tiên. Set cột Rank = `SS` trong sheet để dùng.
@@ -363,3 +383,6 @@ git add index.html && git commit -m "..." && git push
 - 2026-06-11: Apps Script + CryptoCompare → yêu cầu API key, user đăng ký bị "Invalid SSL certificate" → bỏ.
 - 2026-06-11: Apps Script + Gate.io → user từ chối dùng. OKX + CoinDesk Data API → chạy được nhưng coverage quá ít → bỏ.
 - 2026-06-11: `fetch-before-ath.js` bản đầu lấy min kể cả candle listing → ra giá wick ảo (ARB 0.5, SUI 0.1) → fix bỏ candle đầu tiên của sàn.
+- 2026-06-18: Tự đổi KV binding name `WATCHLIST` → `KV_BINDING` vì tưởng config sai → Dashboard thực tế là `WATCHLIST` → waste 2 commit. **Bài học: không đoán mò config/binding name, hỏi user hoặc xem Dashboard.**
+- 2026-06-18: Filter Sync bỏ qua project raise < $5M → sai, Tier-1 (Coinbase Ventures, a16z CSX) invest seed $3-4M đầy → bỏ filter.
+- 2026-06-18: Đặt modal HTML sau `</script>` → `getElementById` null → `null.addEventListener` crash toàn bộ JS → mất hết data hiển thị → fix dời modal lên trước script.
