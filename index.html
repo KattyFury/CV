@@ -17,7 +17,7 @@
          4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 56 · 64
        Ngoại lệ được phép:
          1px / 2px  → border, micro-gap
-         7px 10px   → table cell padding (KHÓA — font scale CV)
+       Table cell padding CHUẨN (mọi bảng phải khớp): thead 8px 16px · td 12px 16px.
        Font-size khóa riêng: 19/15/14/13/12/11/10px (không đụng).
        Khi thêm element mới: chọn spacing trong scale, không tự chế số lẻ. */
     :root {
@@ -876,7 +876,7 @@
 
     .wl-table-section {
       border: 1px solid var(--border); border-radius: 14px;
-      overflow: hidden; margin-top: 4px;
+      overflow: hidden; margin-bottom: 16px;
     }
     .wl-table-scroll { overflow-x: auto; }
 
@@ -889,13 +889,10 @@
     .wl-table th:nth-child(1), .wl-table td:nth-child(1) { width: 32px; }
     .wl-table th:nth-child(2), .wl-table td:nth-child(2) { width: 26%; }
     .wl-table th:nth-child(3), .wl-table td:nth-child(3) { width: 72px; }
-    .wl-table th:nth-child(5), .wl-table td:nth-child(5) { width: 188px; }
+    .wl-table th:nth-child(5), .wl-table td:nth-child(5) { width: 132px; }
     .wl-table th:nth-child(6), .wl-table td:nth-child(6) { width: 44px; }
-    .wl-table thead th,
-    .wl-table tbody td {
-      padding: 7px 10px;
-      vertical-align: middle;
-    }
+    .wl-table thead th { padding: 8px 16px; vertical-align: middle; }
+    .wl-table tbody td { padding: 12px 16px; vertical-align: middle; }
     .wl-table thead th {
       text-align: left;
       font-size: 12px; font-weight: 600;
@@ -941,11 +938,12 @@
       .wl-table th:nth-child(4), .wl-table td:nth-child(4) { display: none; }
       .wl-table th:nth-child(5), .wl-table td:nth-child(5) { width: 96px; }
       .wl-table th:nth-child(6), .wl-table td:nth-child(6) { width: 28px; }
-      .wl-table thead th, .wl-table tbody td { padding: 7px 4px; }
+      .wl-table thead th { padding: 8px 8px; }
+      .wl-table tbody td { padding: 12px 8px; }
       .wl-chip { font-size: 10px; padding: 2px 4px; }
     }
 
-    .wl-chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+    .wl-chips { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 
     .wl-chip {
       font-family: 'Roboto', sans-serif; font-size: 12px; font-weight: 500;
@@ -1295,12 +1293,12 @@
             <table class="wl-table">
               <thead>
                 <tr>
-                  <th style="width:32px">#</th>
+                  <th>#</th>
                   <th>Project</th>
                   <th>Raise</th>
                   <th>VCs</th>
-                  <th style="width:160px">Available</th>
-                  <th style="width:40px"></th>
+                  <th>Available</th>
+                  <th></th>
                   <th id="wl-del-col" style="width:36px;display:none"></th>
                 </tr>
               </thead>
