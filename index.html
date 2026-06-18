@@ -1476,12 +1476,14 @@
     function wlSaveStorage() {
       localStorage.setItem(WL_DATA_KEY, JSON.stringify(wlProjects));
       localStorage.setItem(WL_USER_KEY, JSON.stringify(wlUser));
-      // also persist projects to KV so all devices stay in sync
       fetch('/api/watchlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'kv-save', data: wlProjects }),
-      }).catch(() => {});
+      }).then(r => {
+        if (r.ok) { wlProgress.textContent = '✓ Saved'; setTimeout(() => { wlProgress.textContent = ''; }, 2000); }
+        else { wlProgress.textContent = '⚠ KV save failed'; setTimeout(() => { wlProgress.textContent = ''; }, 4000); }
+      }).catch(() => { wlProgress.textContent = '⚠ No cloud save'; setTimeout(() => { wlProgress.textContent = ''; }, 3000); });
     }
 
     function wlFmtRaise(num) {
