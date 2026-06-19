@@ -1270,6 +1270,21 @@
       <div class="ard-subtabs" id="ard-subtabs">
         <button class="ard-subtab-btn active" id="ard-tab-wte-btn">Work to Earn</button>
         <button class="ard-subtab-btn" id="ard-tab-pretge-btn">Pre-TGE</button>
+        <div id="wl-header-right" style="display:flex;align-items:flex-end;gap:8px;padding-bottom:15px">
+          <span class="wl-progress-text" id="wl-progress"></span>
+          <span id="wl-gate-inline" style="display:none;align-items:center;gap:8px">
+            <input type="password" id="wl-pw" placeholder="Password"
+              style="font-family:'Roboto',sans-serif;font-size:13px;border:1px solid var(--border);
+                     border-radius:6px;padding:4px 12px;outline:none;width:130px;" />
+            <button id="wl-pw-submit" class="wl-gate-submit">Unlock</button>
+            <span id="wl-gate-error" class="wl-gate-error"></span>
+          </span>
+          <button class="wl-add-btn" id="wl-clean-btn" style="display:none" title="Remove TGE'd projects">🧹</button>
+          <button class="wl-add-btn" id="wl-sync-btn" style="display:none" title="Sync from Surf API">↻</button>
+          <button class="wl-add-btn" id="wl-save-btn" style="display:none" title="Save to cloud">↑</button>
+          <button class="wl-add-btn" id="wl-add-btn" style="display:none" title="Add project">+</button>
+          <button class="wl-admin-btn" id="wl-admin-btn">Admin</button>
+        </div>
         <div id="ard-lang-wrap" style="margin-left:auto;display:flex;align-items:flex-end;gap:8px;padding-bottom:15px">
           <div class="lang-toggle">
             <button class="lang-btn active" id="lang-vi-btn">VI</button>
@@ -1285,24 +1300,6 @@
 
       <!-- Pre-TGE panel (Watchlist) -->
       <div class="ard-tab-panel" id="ard-pretge-panel">
-        <div style="position:relative">
-          <div class="val-intro">Tracking pre-TGE opportunities</div>
-          <div id="wl-header-right" style="position:absolute;top:50%;right:0;transform:translateY(-50%);display:flex;align-items:center;gap:8px">
-            <span class="wl-progress-text" id="wl-progress"></span>
-            <span id="wl-gate-inline" style="display:none;align-items:center;gap:8px">
-              <input type="password" id="wl-pw" placeholder="Password"
-                style="font-family:'Roboto',sans-serif;font-size:13px;border:1px solid var(--border);
-                       border-radius:6px;padding:4px 12px;outline:none;width:130px;" />
-              <button id="wl-pw-submit" class="wl-gate-submit">Unlock</button>
-              <span id="wl-gate-error" class="wl-gate-error"></span>
-            </span>
-            <button class="wl-add-btn" id="wl-clean-btn" style="display:none" title="Remove TGE'd projects">🧹</button>
-            <button class="wl-add-btn" id="wl-sync-btn" style="display:none" title="Sync from Surf API">↻</button>
-            <button class="wl-add-btn" id="wl-save-btn" style="display:none" title="Save to cloud">↑</button>
-            <button class="wl-add-btn" id="wl-add-btn" style="display:none" title="Add project">+</button>
-            <button class="wl-admin-btn" id="wl-admin-btn">Admin</button>
-          </div>
-        </div>
         <div class="wl-table-section">
           <div class="wl-table-scroll">
             <table class="wl-table">
@@ -1495,6 +1492,7 @@
       ardWteBtn.classList.toggle('active', isWte);
       ardPretgeBtn.classList.toggle('active', !isWte);
       ardLangWrap.style.display = isWte ? '' : 'none';
+      document.getElementById('wl-header-right').style.display = isWte ? 'none' : 'flex';
       if (!isWte) wlInit();
     }
 
