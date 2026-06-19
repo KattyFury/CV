@@ -599,17 +599,10 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 16px;
+      margin-bottom: 32px;
+      scroll-margin-top: 132px; /* header(56) + subtab(~76) */
     }
-    @media (min-width: 768px) {
-      .wte-rank-group { grid-template-columns: 1fr 1fr; }
-    }
-
-    /* Each rank group is its own 2-col grid */
-    .wte-rank-group {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
+    .wte-rank-group:last-child { margin-bottom: 0; }
     @media (min-width: 768px) {
       .wte-rank-group { grid-template-columns: 1fr 1fr; }
     }
@@ -1264,11 +1257,27 @@
   <div id="airdrop-view" style="display:none">
     <div class="ard-wrap">
 
-      <!-- Sub-tab bar: [Work to Earn] [Pre-TGE]   …   [↻↑+] [VI|EN] [Admin] -->
+      <!-- Sub-tab bar -->
       <div class="ard-subtabs" id="ard-subtabs">
         <button class="ard-subtab-btn active" id="ard-tab-wte-btn">Work to Earn</button>
         <button class="ard-subtab-btn" id="ard-tab-pretge-btn">Pre-TGE</button>
-        <div id="wl-header-right" style="margin-left:auto;display:flex;align-items:center;gap:8px">
+
+        <!-- WTE controls: rank filters + VI|EN (ẩn khi Pre-TGE) -->
+        <div id="ard-wte-controls" style="margin-left:auto;display:flex;align-items:center;gap:8px">
+          <div class="lang-toggle" id="rank-filter">
+            <button class="lang-btn active" data-rank="SS" id="rf-ss">S+</button>
+            <button class="lang-btn" data-rank="S"  id="rf-s">S</button>
+            <button class="lang-btn" data-rank="A"  id="rf-a">A</button>
+            <button class="lang-btn" data-rank="B"  id="rf-b">B</button>
+          </div>
+          <div class="lang-toggle">
+            <button class="lang-btn active" id="lang-vi-btn">VI</button>
+            <button class="lang-btn" id="lang-en-btn">EN</button>
+          </div>
+        </div>
+
+        <!-- Pre-TGE controls: sync/save/add + Admin (ẩn khi WTE) -->
+        <div id="wl-header-right" style="margin-left:auto;display:none;align-items:center;gap:8px">
           <span class="wl-progress-text" id="wl-progress"></span>
           <span id="wl-gate-inline" style="display:none;align-items:center;gap:8px">
             <input type="password" id="wl-pw" placeholder="Password"
@@ -1281,10 +1290,6 @@
           <button class="wl-add-btn" id="wl-sync-btn" style="display:none" title="Sync from Surf API">↻</button>
           <button class="wl-add-btn" id="wl-save-btn" style="display:none" title="Save to cloud">↑</button>
           <button class="wl-add-btn" id="wl-add-btn" style="display:none" title="Add project">+</button>
-          <div class="lang-toggle" id="ard-lang-wrap">
-            <button class="lang-btn active" id="lang-vi-btn">VI</button>
-            <button class="lang-btn" id="lang-en-btn">EN</button>
-          </div>
           <button class="wl-admin-btn" id="wl-admin-btn">Admin</button>
         </div>
       </div>
@@ -1475,11 +1480,12 @@
     }
 
     // ── Airdrop sub-tabs: Work to Earn | Pre-TGE ─────
-    const ardWtePanel    = document.getElementById('ard-wte-panel');
-    const ardPretgePanel = document.getElementById('ard-pretge-panel');
-    const ardWteBtn      = document.getElementById('ard-tab-wte-btn');
-    const ardPretgeBtn   = document.getElementById('ard-tab-pretge-btn');
-    const ardLangWrap    = document.getElementById('ard-lang-wrap');
+    const ardWtePanel     = document.getElementById('ard-wte-panel');
+    const ardPretgePanel  = document.getElementById('ard-pretge-panel');
+    const ardWteBtn       = document.getElementById('ard-tab-wte-btn');
+    const ardPretgeBtn    = document.getElementById('ard-tab-pretge-btn');
+    const ardWteControls  = document.getElementById('ard-wte-controls');
+    const ardPretgeCtrl   = document.getElementById('wl-header-right');
 
     function showArdTab(tab) {
       const isWte = tab === 'wte';
@@ -1487,12 +1493,23 @@
       ardPretgePanel.classList.toggle('active', !isWte);
       ardWteBtn.classList.toggle('active', isWte);
       ardPretgeBtn.classList.toggle('active', !isWte);
-      ardLangWrap.style.display = isWte ? '' : 'none';
+      ardWteControls.style.display = isWte ? 'flex' : 'none';
+      ardPretgeCtrl.style.display  = isWte ? 'none' : 'flex';
       if (!isWte) wlInit();
     }
 
     ardWteBtn.addEventListener('click',    () => showArdTab('wte'));
     ardPretgeBtn.addEventListener('click', () => showArdTab('pretge'));
+
+    // ── Rank filter S+/S/A/B → scroll to section ──────
+    document.getElementById('rank-filter').addEventListener('click', e => {
+      const btn = e.target.closest('[data-rank]');
+      if (!btn) return;
+      document.querySelectorAll('#rank-filter .lang-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const el = document.getElementById('wte-rank-' + btn.dataset.rank);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
 
     function showCV(push = true) {
       hideAllViews();
@@ -2818,7 +2835,7 @@
             ${nameHtml}
             <div class="wte-card-meta">
               ${p.type ? `<span class="wte-type">${p.type}</span>` : ''}
-              <span class="wte-rank rank-${p.rank}">${{SS:'★★★★',S:'★★★',A:'★★',B:'★'}[p.rank]||p.rank}</span>
+              <span class="wte-rank rank-${p.rank}">${{SS:'S+',S:'S',A:'A',B:'B'}[p.rank]||p.rank}</span>
             </div>
           </div>
           ${section('Get Started', p.getStarted, 'getStarted')}
@@ -2831,7 +2848,7 @@
       projects.forEach(p => { if (groups[p.rank]) groups[p.rank].push(p); });
       container.innerHTML = ['SS','S','A','B']
         .filter(r => groups[r].length)
-        .map(r => `<div class="wte-rank-group wte-rank-group--${r}">${groups[r].map(cardHtml).join('')}</div>`)
+        .map(r => `<div id="wte-rank-${r}" class="wte-rank-group wte-rank-group--${r}">${groups[r].map(cardHtml).join('')}</div>`)
         .join('');
     }
 
