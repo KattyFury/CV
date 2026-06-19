@@ -1301,14 +1301,16 @@
             <button class="lang-btn" data-rank="A"  id="rf-a">A</button>
             <button class="lang-btn" data-rank="B"  id="rf-b">B</button>
           </div>
-          <div class="lang-dropdown" id="lang-dropdown">
+          <div class="lang-dropdown" id="lang-dropdown" style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:13px;color:var(--muted);font-weight:500">Language</span>
             <button class="lang-dd-btn" id="lang-dd-trigger">
-              Language <span id="lang-dd-label" style="color:var(--text);font-weight:600">[Vietnamese]</span>
+              <span id="lang-dd-label">Vietnamese</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px"><path d="m6 9 6 6 6-6"/></svg>
             </button>
             <div class="lang-dd-menu" id="lang-dd-menu" style="display:none">
-              <button class="lang-dd-item active" id="lang-vi-btn">Vietnamese</button>
+              <button class="lang-dd-item" id="lang-vi-btn">Vietnamese</button>
               <button class="lang-dd-item" id="lang-en-btn">English</button>
+              <button class="lang-dd-item" id="lang-zh-btn">中文</button>
             </div>
           </div>
         </div>
@@ -2916,11 +2918,13 @@
     }
 
     // ── Language dropdown ─────────────────────────────
-    const langEnBtn   = document.getElementById('lang-en-btn');
-    const langViBtn   = document.getElementById('lang-vi-btn');
-    const langDdMenu  = document.getElementById('lang-dd-menu');
+    const langEnBtn     = document.getElementById('lang-en-btn');
+    const langViBtn     = document.getElementById('lang-vi-btn');
+    const langZhBtn     = document.getElementById('lang-zh-btn');
+    const langDdMenu    = document.getElementById('lang-dd-menu');
     const langDdTrigger = document.getElementById('lang-dd-trigger');
-    const langDdLabel = document.getElementById('lang-dd-label');
+    const langDdLabel   = document.getElementById('lang-dd-label');
+    const langLabels    = { VI: 'Vietnamese', EN: 'English', ZH: '中文' };
 
     langDdTrigger.addEventListener('click', e => {
       e.stopPropagation();
@@ -2930,17 +2934,18 @@
 
     async function switchLang(lang) {
       if (wteLang === lang) { langDdMenu.style.display = 'none'; return; }
-      wteLang = lang;
-      langViBtn.classList.toggle('active', lang === 'VI');
-      langEnBtn.classList.toggle('active', lang === 'EN');
-      langDdLabel.textContent = lang === 'VI' ? '[Vietnamese]' : '[English]';
+      wteLang = lang === 'ZH' ? 'EN' : lang; // ZH dùng EN data tạm
+      [langViBtn, langEnBtn, langZhBtn].forEach(b => b.classList.remove('active'));
+      ({ VI: langViBtn, EN: langEnBtn, ZH: langZhBtn })[lang]?.classList.add('active');
+      langDdLabel.textContent = langLabels[lang];
       langDdMenu.style.display = 'none';
-      if (lang === 'EN' && !wteLoaded.EN) await translateToEN();
+      if (wteLang === 'EN' && !wteLoaded.EN) await translateToEN();
       renderWTE();
     }
 
     langViBtn.addEventListener('click', () => switchLang('VI'));
     langEnBtn.addEventListener('click', () => switchLang('EN'));
+    langZhBtn.addEventListener('click', () => switchLang('ZH'));
 
     // ── Init ─────────────────────────────────────────
     routeFromPath(); // tất cả biến đã khai báo xong, an toàn để gọi
