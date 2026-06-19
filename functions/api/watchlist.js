@@ -37,13 +37,11 @@ export async function onRequestGet(context) {
       return Response.json({ ...body, source: 'surf' }, { headers: { 'Cache-Control': 'no-store' } });
     }
 
-    // Surf trống. Chỉ luồng Add (llm=1) mới fallback sang Claude → OpenAI
+    // Surf trống. Chỉ luồng Add (llm=1) mới fallback sang Claude (web search)
     if (searchParams.get('llm') === '1') {
-      let info = await askClaude(context.env, q);
-      let src  = 'claude';
-      if (!info) { info = await askOpenAI(context.env, q); src = 'openai'; }
+      const info = await askClaude(context.env, q);
       if (info) {
-        return Response.json(llmToSurf(info, src), { headers: { 'Cache-Control': 'no-store' } });
+        return Response.json(llmToSurf(info, 'claude'), { headers: { 'Cache-Control': 'no-store' } });
       }
     }
 
@@ -126,24 +124,6 @@ async function askClaude(env, name) {
     }
   } catch { return null; }
   return null;
-}
-
-async function askOpenAI(env, name) {
-  if (!env.OPENAI) return null;
-  try {
-    const r = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${env.OPENAI}`, 'content-type': 'application/json' },
-      body: JSON.stringify({
-        model: 'gpt-4o',
-        messages: [{ role: 'user', content: LLM_PROMPT(name) }],
-        response_format: { type: 'json_object' },
-      }),
-    });
-    const b = await r.json();
-    const text = b.choices && b.choices[0] && b.choices[0].message ? b.choices[0].message.content : '';
-    return parseLLMJson(text);
-  } catch { return null; }
 }
 
 export async function onRequestPost(context) {

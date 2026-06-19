@@ -1845,7 +1845,7 @@
       wlAddStatus.textContent = 'Searching...';
       wlAddSubmit.disabled = true;
       try {
-        // Add dùng SURF + Claude + OpenAI (llm=1 bật fallback khi Surf trống)
+        // Add dùng SURF + Claude (web search); llm=1 bật fallback khi Surf trống
         const res  = await fetch('/api/watchlist?action=detail&llm=1&q=' + encodeURIComponent(q));
         const body = await res.json();
         const d    = body.data;
