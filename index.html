@@ -1833,7 +1833,8 @@
       wlAddStatus.textContent = 'Searching...';
       wlAddSubmit.disabled = true;
       try {
-        const res  = await fetch('/api/watchlist?action=detail&q=' + encodeURIComponent(q));
+        // Add dùng SURF + Claude + OpenAI (llm=1 bật fallback khi Surf trống)
+        const res  = await fetch('/api/watchlist?action=detail&llm=1&q=' + encodeURIComponent(q));
         const body = await res.json();
         const d    = body.data;
         if (!d) { wlAddStatus.textContent = 'Not found.'; wlAddSubmit.disabled = false; return; }
@@ -1866,7 +1867,8 @@
         wlSaveStorage();
         wlRender();
         wlCloseModal();
-        wlProgress.textContent = `✓ Added ${name}`;
+        const via = body.source && body.source !== 'surf' ? ` (via ${body.source})` : '';
+        wlProgress.textContent = `✓ Added ${name}${via}`;
         setTimeout(() => { wlProgress.textContent = ''; }, 3000);
       } catch (e) {
         wlAddStatus.textContent = 'Connection error.';
