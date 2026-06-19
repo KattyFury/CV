@@ -1,5 +1,20 @@
 [
   {
+    "id": "custom_arc",
+    "name": "Arc",
+    "category": "Layer1",
+    "raise": "$222M",
+    "raise_num": 222000000,
+    "round": "",
+    "date": "",
+    "backers": [
+      "a16z",
+      "BlackRock"
+    ],
+    "x_handle": "",
+    "logo_url": ""
+  },
+  {
     "id": 1,
     "name": "XO Market",
     "category": "DEX & AMM, Prediction Market",
