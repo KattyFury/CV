@@ -555,9 +555,8 @@
       padding: 0 24px 24px;
     }
     .ard-subtabs {
-      display: flex; gap: 16px; align-items: center;
-      border-bottom: 1px solid var(--border);
-      padding: 20px 0 0; margin-bottom: 0;
+      display: flex; gap: 8px; align-items: center;
+      padding: 20px 0 16px; margin-bottom: 0;
       position: sticky; top: 56px;
       background: #fff; z-index: 10;
     }
@@ -565,12 +564,12 @@
       background: none; border: none; cursor: pointer;
       font-family: 'Roboto', sans-serif; font-size: 15px; font-weight: 500;
       letter-spacing: -0.01em;
-      color: var(--muted); padding: 0 0 16px; margin-bottom: -1px;
-      border-bottom: 2px solid transparent;
-      transition: color 0.15s, border-color 0.15s;
+      color: var(--muted); padding: 6px 16px;
+      border-radius: 8px;
+      transition: background 0.15s, color 0.15s;
     }
-    .ard-subtab-btn:hover { color: var(--text); }
-    .ard-subtab-btn.active { color: var(--text); border-color: var(--accent); }
+    .ard-subtab-btn:hover { background: var(--off); color: var(--text); }
+    .ard-subtab-btn.active { background: var(--off); color: var(--text); }
     .ard-tab-panel { display: none; }
     .ard-tab-panel.active { display: block; }
 
@@ -578,17 +577,19 @@
     .wte-count { font-size: 13px; color: var(--muted); }
 
     /* Language toggle */
-    .lang-btn {
-      font-family: 'Roboto', sans-serif; font-size: 13px; font-weight: 500;
-      border: 1px solid var(--border); border-radius: 6px; background: var(--white);
-      color: var(--sub); cursor: pointer;
-      height: 30px; padding: 0 12px;
-      display: inline-flex; align-items: center; justify-content: center;
-      box-sizing: border-box;
-      transition: border-color 0.15s, color 0.15s;
+    .lang-toggle {
+      display: flex; border: 1px solid var(--border);
+      border-radius: 6px; overflow: hidden;
+      height: 30px; box-sizing: border-box;
     }
-    .lang-btn:hover { border-color: var(--accent); color: var(--text); }
-    .lang-btn.active { border-color: var(--accent); color: var(--text); font-weight: 600; }
+    .lang-btn {
+      background: none; border: none; cursor: pointer;
+      font-family: 'Roboto', sans-serif; font-size: 13px; font-weight: 500;
+      color: var(--sub); padding: 0 12px;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .lang-btn.active { background: var(--accent); color: #1a1a1a; }
 
     /* Cards wrapper — stacks rank groups vertically */
     #wte-cards { display: flex; flex-direction: column; gap: 8px; }
@@ -1263,11 +1264,11 @@
   <div id="airdrop-view" style="display:none">
     <div class="ard-wrap">
 
-      <!-- Sub-tab bar: Work to Earn | Pre-TGE   [VI|EN] -->
+      <!-- Sub-tab bar: [Work to Earn] [Pre-TGE]   …   [↻↑+] [VI|EN] [Admin] -->
       <div class="ard-subtabs" id="ard-subtabs">
         <button class="ard-subtab-btn active" id="ard-tab-wte-btn">Work to Earn</button>
         <button class="ard-subtab-btn" id="ard-tab-pretge-btn">Pre-TGE</button>
-        <div id="wl-header-right" style="display:flex;align-items:flex-end;gap:8px;padding-bottom:16px">
+        <div id="wl-header-right" style="margin-left:auto;display:flex;align-items:center;gap:8px">
           <span class="wl-progress-text" id="wl-progress"></span>
           <span id="wl-gate-inline" style="display:none;align-items:center;gap:8px">
             <input type="password" id="wl-pw" placeholder="Password"
@@ -1280,11 +1281,11 @@
           <button class="wl-add-btn" id="wl-sync-btn" style="display:none" title="Sync from Surf API">↻</button>
           <button class="wl-add-btn" id="wl-save-btn" style="display:none" title="Save to cloud">↑</button>
           <button class="wl-add-btn" id="wl-add-btn" style="display:none" title="Add project">+</button>
+          <div class="lang-toggle" id="ard-lang-wrap">
+            <button class="lang-btn active" id="lang-vi-btn">VI</button>
+            <button class="lang-btn" id="lang-en-btn">EN</button>
+          </div>
           <button class="wl-admin-btn" id="wl-admin-btn">Admin</button>
-        </div>
-        <div id="ard-lang-wrap" style="margin-left:auto;display:flex;align-items:flex-end;gap:8px;padding-bottom:16px">
-          <button class="lang-btn active" id="lang-vi-btn">VI</button>
-          <button class="lang-btn" id="lang-en-btn">EN</button>
         </div>
       </div>
 
@@ -1487,7 +1488,6 @@
       ardWteBtn.classList.toggle('active', isWte);
       ardPretgeBtn.classList.toggle('active', !isWte);
       ardLangWrap.style.display = isWte ? '' : 'none';
-      document.getElementById('wl-header-right').style.display = isWte ? 'none' : 'flex';
       if (!isWte) wlInit();
     }
 
