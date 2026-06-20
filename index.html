@@ -1293,14 +1293,8 @@
         <button class="ard-subtab-btn active" id="ard-tab-wte-btn">Work to Earn</button>
         <button class="ard-subtab-btn" id="ard-tab-pretge-btn">Pre-TGE</button>
 
-        <!-- WTE controls: rank filters + VI|EN (ẩn khi Pre-TGE) -->
+        <!-- WTE controls: Language only (rank filter đã chuyển xuống floating bar) -->
         <div id="ard-wte-controls" style="margin-left:auto;display:flex;align-items:center;gap:18px">
-          <div class="lang-toggle" id="rank-filter">
-            <button class="lang-btn active" data-rank="SS" id="rf-ss">S+</button>
-            <button class="lang-btn" data-rank="S"  id="rf-s">S</button>
-            <button class="lang-btn" data-rank="A"  id="rf-a">A</button>
-            <button class="lang-btn" data-rank="B"  id="rf-b">B</button>
-          </div>
           <div class="lang-dropdown" id="lang-dropdown" style="display:flex;align-items:center;gap:8px">
             <span style="font-size:13px;color:var(--muted);font-weight:500">Language</span>
             <button class="lang-dd-btn" id="lang-dd-trigger">
@@ -1431,6 +1425,16 @@
     <img id="lightbox-img" src="" alt="" />
   </div>
 
+  <!-- Rank filter floating bar (WTE only) -->
+  <div id="rank-filter-float" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:50">
+    <div class="lang-toggle" id="rank-filter" style="box-shadow:0 4px 20px rgba(0,0,0,0.15);backdrop-filter:blur(8px)">
+      <button class="lang-btn active" data-rank="SS" id="rf-ss">S+</button>
+      <button class="lang-btn" data-rank="S"  id="rf-s">S</button>
+      <button class="lang-btn" data-rank="A"  id="rf-a">A</button>
+      <button class="lang-btn" data-rank="B"  id="rf-b">B</button>
+    </div>
+  </div>
+
   <!-- Add project modal -->
   <div class="wl-modal-backdrop" id="wl-add-modal">
     <div class="wl-modal">
@@ -1515,6 +1519,7 @@
       cvView.style.display = 'none';
       valView.style.display = 'none';
       ardView.style.display = 'none';
+      document.getElementById('rank-filter-float').style.display = 'none';
       [navCvBtn, navValBtn, navArdBtn].forEach(b => b.classList.remove('active'));
     }
 
@@ -1534,6 +1539,7 @@
       ardPretgeBtn.classList.toggle('active', !isWte);
       ardWteControls.style.display = isWte ? 'flex' : 'none';
       ardPretgeCtrl.style.display  = isWte ? 'none' : 'flex';
+      document.getElementById('rank-filter-float').style.display = isWte ? 'block' : 'none';
       if (!isWte) wlInit();
     }
 
