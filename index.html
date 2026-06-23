@@ -438,7 +438,7 @@
        Tiêu đề (label) → Box nội dung (split-box / inputs) → Chốt (levels / nút Calculate) */
     .val-analysis > .val-card { display: flex; flex-direction: column; }
     .market-levels {
-      display: flex; gap: 4px; margin-top: auto; padding-top: 12px;
+      display: flex; gap: 4px; align-items: center; justify-content: space-around;
     }
     .mkt-lvl {
       flex: 1; text-align: center; padding: 8px 2px;
@@ -448,10 +448,10 @@
       transition: opacity 0.2s, font-weight 0.2s;
       white-space: nowrap;
     }
-    .mkt-lvl.mkt-active { opacity: 1; font-weight: 700; font-size: 12px; }
-    .mkt-lvl[data-lvl="0"].mkt-active { background: #22C55E; color: #fff; }
-    .mkt-lvl[data-lvl="1"].mkt-active { background: #FFD447; color: #1a1a1a; }
-    .mkt-lvl[data-lvl="2"].mkt-active { background: #FF5A36; color: #1a1a1a; }
+    .mkt-lvl.mkt-active { opacity: 1; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+    .mkt-lvl[data-lvl="0"].mkt-active { color: #22C55E; }
+    .mkt-lvl[data-lvl="1"].mkt-active { color: #B8860B; }
+    .mkt-lvl[data-lvl="2"].mkt-active { color: #FF5A36; }
     /* split-box luôn trắng dù card đổi màu */
     #market-terms { background: #fff; }
 
