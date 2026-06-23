@@ -383,7 +383,7 @@
     .vc-q1.val-card-label, .vc-q1.calc-card-label { margin: 0; }
     .vc-q23  { grid-row: 2 / 3; min-height: 0; }
     .vc-q234 { grid-row: 2 / 4; min-height: 0; }
-    .vc-q4   { grid-row: 3 / 4; display: flex; align-items: stretch; justify-content: space-around; }
+    .vc-q4   { grid-row: 3 / 4; display: flex; align-items: center; justify-content: space-around; }
     .val-boxes > .val-card > .vc-q234,
     .val-boxes > .val-card > .vc-q23 { overflow: hidden; align-self: stretch; }
     .val-boxes .split-box { margin: 0; height: 100%; box-sizing: border-box; }
@@ -439,11 +439,11 @@
        Tiêu đề (label) → Box nội dung (split-box / inputs) → Chốt (levels / nút Calculate) */
     .val-analysis > .val-card { display: flex; flex-direction: column; }
     .market-levels {
-      display: flex; gap: 4px; align-items: center; justify-content: space-around; height: 100%; padding: 0;
+      display: flex; gap: 4px; align-items: center; justify-content: space-around; padding: 0;
     }
     .mkt-lvl {
-      flex: 1; text-align: center; padding: 7px 2px;
-      margin: 0;
+      flex: 1; text-align: center; padding: 0 2px;
+      margin: 0; height: 26px; display: flex; align-items: center; justify-content: center;
       border-radius: 8px; font-size: 12px; font-weight: 500;
       color: var(--muted); opacity: 0.28;
       letter-spacing: 0.02em; line-height: 1.2;
@@ -509,7 +509,7 @@
     .calc-btn:hover { opacity: 0.85; }
     /* Nút Predict ở hàng 4 — khớp vị trí & chiều cao với hàng Strong/Normal/Weak
        (.market-levels có padding-top:12px nên nút levels cao ~36px, bám đáy) */
-    #predict-open-btn { margin: 0; padding: 7px 2px; }
+    #predict-open-btn { margin: 0; height: 26px; align-self: center; }
 
     /* ── PREDICT MODAL FORM ─────────────────────────── */
     #calc-form { display: flex; flex-direction: column; gap: 12px; }
