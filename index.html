@@ -378,7 +378,7 @@
       height: var(--box-h); min-height: var(--box-h);
       display: grid; grid-template-rows: 1fr 2fr 1fr;
     }
-    .vc-q1   { grid-row: 1 / 2; }   /* tiêu đề */
+    .vc-q1   { grid-row: 1 / 2; display: flex; align-items: center; }   /* tiêu đề */
     .vc-q23  { grid-row: 2 / 4; min-height: 0; }   /* nội dung khi có kết luận */
     .vc-q234 { grid-row: 2 / 5; min-height: 0; }   /* nội dung khi không kết luận */
     .vc-q4   { grid-row: 4 / 5; }   /* kết luận */
@@ -438,7 +438,7 @@
        Tiêu đề (label) → Box nội dung (split-box / inputs) → Chốt (levels / nút Calculate) */
     .val-analysis > .val-card { display: flex; flex-direction: column; }
     .market-levels {
-      display: flex; gap: 4px; align-items: center; justify-content: space-around;
+      display: flex; gap: 4px; align-items: center; justify-content: space-around; height: 100%;
     }
     .mkt-lvl {
       flex: 1; text-align: center; padding: 8px 2px;
