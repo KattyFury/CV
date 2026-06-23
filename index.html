@@ -376,7 +376,7 @@
        Box không có kết luận: nội dung chiếm q2-3-4 (3/4). */
     .val-analysis.val-boxes > .val-card {
       height: var(--box-h); min-height: var(--box-h);
-      display: grid; grid-template-rows: repeat(4, 1fr);
+      display: grid; grid-template-rows: auto 1fr 1fr auto;
     }
     .vc-q1   { grid-row: 1 / 2; }   /* tiêu đề */
     .vc-q23  { grid-row: 2 / 4; min-height: 0; }   /* nội dung khi có kết luận */
